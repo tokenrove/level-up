@@ -6,25 +6,60 @@
     <title>Level Up!</title>
   </head>
   <body>
-    <p><b>{{ me.heroic_alias }}</b></p>
-    <p>{{ me }}</p>
+    <!-- profile -->
+    <p><img src="/images/mage.gif" /><b>{{ me.heroic_alias|escape }}</b></p>
+    <a href="/me/edit">Edit</a>
 
-    <hr>
-    <p>Gatherer code: {{ me.gatherer_code }}</p>
+
+    <!-- jobs -->
+    <hr />
+    <p>Job{{ jobs|pluralize }}:</p>
+    {% for job in jobs %}
+    <p><a href="/me/job?key={{ job.key|urlencode }}">Job: {{ job.archetype.name|escape }}</a></p>
+    {% endfor %}
+    {% if available_archetypes %}
+    <p><form action="/me/new-job" method="post">
+	<select name="archetype">
+	  {% for archetype in available_archetypes %}
+	  <option {% if forloop.first %}selected{% endif %}>{{ archetype.name|escape }}</option>
+	  {% endfor %}
+	</select>
+	<input type=submit value="New job" /></form></p>
+    {% endif %}
+
+
+    <hr />
+    <!-- unconnected metrics -->
+    {% if unconnected_metrics %}
+    <p>Unconnected metrics:</p>
+    <table>
+    {% for metric in unconnected_metrics %}
+    <tr class="{% cycle odd-row,even-row %}">
+      <td><a href="/me/metrics/connect?key={{ metric.key|urlencode }}">{{ metric.name|escape }}</a></td>
+    </tr>
+    {% endfor %}
+    </table>
+    {% endif %}
+    <p><a href="/me/metrics">All Metrics</a></p>
+
+
+    <hr />
+    <!-- gatherer config -->
+    <p>Gatherer code: {{ me.gatherer_code|escape }}</p>
+    <a href="/me/invalidate">Invalidate code</a>
     <p>Give this code to your gatherers to associate them with your
     character.  Treat the code like a password, since it allows
     anyone knowing it to submit new metrics for you.</p>
 
-    <hr>
-    {% for metric in metrics %}
-    <p>{{ metric.name }}</p>
-    {% endfor %}
-
-    <hr>
-    <p>
-    <a href="/me/invalidate">Invalidate code</a>
-    <a href="/me/edit">Edit</a>
-    <a href="/me/metrics">Metrics</a>
-    </p>
+    <!-- admin tools -->
+    {% if adminp %}
+    <hr />
+    <p><b>Warning:</b> You are logged in as an administrator.  Changes
+      made here will have an effect on the global application experience.</p>
+    <p><form action="/admin/new-class" method="post">
+	<input type=text name=name />
+	<input type=submit value="Register new class" />
+    </form></p>
+    {% endif %}
   </body>
 </html>

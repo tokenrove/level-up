@@ -27,10 +27,8 @@ class DeleteHandler(webapp.RequestHandler):
 
 class TxnsHandler(webapp.RequestHandler):
     def get(self):
-        key = self.request.get('key')
         util.handle_with_template(self.response, 'txns.html',
-                                  { 'metric': data.Metric.get(key),
-                                    'txns': data.MetricTxn.by_user(users.get_current_user()).filter('metric =',key).order('-created').fetch(max_results) })
+                                  { 'txns': data.MetricTxn.by_user(users.get_current_user()).filter('metric =',self.request.get('key')).order('-created').fetch(max_results) })
 
 
 class ViewHandler(webapp.RequestHandler):
@@ -42,18 +40,20 @@ class ViewHandler(webapp.RequestHandler):
 
 
 class GathererHandler(webapp.RequestHandler):
+    def get(self):
+        self.error(405)
+
     def post(self):
         character = data.Character.by_code(self.request.get('code')).get()
         if character == None: return self.error(403)
 
-        value = int(self.request.get('value'))
         metric = character.register_metric(self.request.get('metric'))
-        metric.log(value, self.request.get('unit'))
+        metric.log(self.request.get('value'), self.request.get('unit'))
 
         util.handle_with_template(self.response, 'accepted.html',
                                   { 'metric': self.request.get('metric'),
                                     'character': character,
-                                    'value': value,
+                                    'value': self.request.get('value'),
                                     'unit': self.request.get('unit') })
 
                                           

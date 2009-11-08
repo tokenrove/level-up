@@ -1,0 +1,26 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <link type="text/css" rel="stylesheet" href="/stylesheets/main.css" />
+    <title>Level Up!</title>
+  </head>
+  <body>
+    <p>Last {{ txns|length }} transactions logged for {{ metric.name|escape }}:
+      <table>
+	<tr class="legend-row"><td>Date</td><td>Value</td><td>Unit</td><td>Job</td><td>Ops</td></tr>
+      {% for txn in txns %}
+      <tr class="{% cycle odd-row,even-row %}">
+	<td>{{ txn.created|escape }}</td>
+	<td>{{ txn.value|escape }}</td>
+	<td>{{ txn.unit|escape }}</td>
+	<td>{{ txn.job|escape }}</td>
+	<td>
+	  <a href="/me/metrics/txn?key={{ txn.key|urlencode }}&op=rollback">rollback</a>
+	</td>
+      </tr>
+      {% endfor %}
+      </table>
+    </p>
+  </body>
+</html>

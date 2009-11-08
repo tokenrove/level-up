@@ -6,6 +6,6 @@
     <title>Level Up!</title>
   </head>
   <body>
-    <p>{{ metric }}: {{ value }} {{ unit }} accepted for {{ character.heroic_alias }}</p>
+    <p>{{ metric|escape }}: {{ value|escape }} {{ unit|escape }} accepted for {{ character.heroic_alias|escape }}</p>
   </body>
 </html>

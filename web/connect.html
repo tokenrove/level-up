@@ -1,0 +1,26 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <link type="text/css" rel="stylesheet" href="/stylesheets/main.css" />
+    <title>Level Up!</title>
+  </head>
+  <body>
+    <p>{{ me.heroic_alias|escape }}</p>
+    <p>Connect {{ metric.name|escape }} to which job?</p>
+    <table>
+    {% for job in jobs %}
+    <tr class="{% cycle odd-row,even-row %}">
+      <td>Level {{ job.level|escape }}</td>
+      <td>{{ job.archetype.name|escape|capfirst }}</td>
+    </tr>
+    {% endfor %}
+    <tr>{% if metric.connected_to %}
+      Disconnect
+      {% else %}
+      <a href="/me">Leave disconnected</a>
+      {% endif %}
+    </tr>
+    </table>
+  </body>
+</html>

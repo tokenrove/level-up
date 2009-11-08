@@ -1,3 +1,7 @@
 body {
     background-color: #DDDDFF;
 }
+
+tr.odd-row { background-color: #CCCCF0; }
+tr.even-row { background-color: #AAAAEE; }
+tr.legend-row { background-color: #8888AA; }

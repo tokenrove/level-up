@@ -10,6 +10,14 @@ handlers:
 - url: /images
   static_dir: images
 
+- url: /me/metrics
+  login: required
+  script: metric.py
+
+- url: /me/metrics/.*
+  login: required
+  script: metric.py
+
 - url: /me
   login: required
   script: me.py

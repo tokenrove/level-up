@@ -2,10 +2,41 @@ import os
 import base64
 from google.appengine.ext import db
 
-@classmethod
-def by_user(cls, user):
-    return cls.all().filter('owner =', user)
-db.Model.by_user = by_user
+class OwnedModel(db.Model):
+    owner = db.UserProperty(required=True)
+
+    @classmethod
+    def by_user(cls, user):
+        return cls.all().filter('owner =', user)
+
+
+class Archetype(db.Model):
+    name = db.StringProperty(required=True)
+
+class Job(OwnedModel):
+    archetype = db.ReferenceProperty(Archetype, required=True)
+    level = db.IntegerProperty(default=1)
+    xp = db.IntegerProperty(default=0)
+
+class Metric(OwnedModel):
+    name = db.StringProperty(required=True)
+    connected_to = db.ReferenceProperty(Job)
+
+    def log(self, value, unit):
+        MetricTxn(owner=self.owner,
+                  metric=self,
+                  value=value,
+                  unit=unit,
+                  job=self.connected_to and Job.get(self.connected_to)).put()
+        return
+
+class MetricTxn(OwnedModel):
+    metric = db.ReferenceProperty(Metric, required=True)
+    created = db.DateProperty(auto_now_add=True)
+    value = db.IntegerProperty(required=True)
+    unit = db.StringProperty()
+    job = db.ReferenceProperty(Job)
+
 
 class VisualProperties(db.Model):
     height_in_cm = db.FloatProperty()
@@ -15,17 +46,7 @@ class VisualProperties(db.Model):
     eye_color = db.StringProperty()
     favorite_color = db.StringProperty()
 
-class Metric(db.Model):
-    owner = db.UserProperty(required=True)
-    name = db.StringProperty(required=True)
-    unit = db.StringProperty()
-
-    def log(self, value, unit):
-        # do nothing
-        return
-
-class Character(db.Model):
-    owner = db.UserProperty(required=True)
+class Character(OwnedModel):
     # decoration
     heroic_alias = db.StringProperty()
     sex = db.StringProperty(choices=set(["male","female","other"])) # not bool in case a third sex joins
@@ -33,17 +54,12 @@ class Character(db.Model):
     location = db.GeoPtProperty()
     # metrics
     gatherer_code = db.StringProperty(required=True)
-    metrics = db.ListProperty(db.Key)
-    # classes
-    classes = db.ListProperty(db.Key)
 
     def register_metric(self, name):
         metric = Metric.all().filter('owner =', self.owner).filter('name =', name).get();
         if metric == None:
             metric = Metric(owner=self.owner, name=name)
             metric.put()
-            self.metrics.append(metric.key())
-            self.put()
         return metric
 
     @classmethod
@@ -52,5 +68,5 @@ class Character(db.Model):
 
 def fresh_gatherer_code():
     r = base64.urlsafe_b64encode(os.urandom(8))
-    assert Character.by_code(r) == None # XXX not the right thing, but better than nothing.
+    assert Character.by_code(r).count(1) == 0 # XXX not the right thing, but better than nothing.
     return r
