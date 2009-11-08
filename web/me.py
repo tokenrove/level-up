@@ -42,6 +42,11 @@ class NewJobHandler(util.RequestHandler):
         data.Job(owner=user, archetype=archetype).put()
         self.redirect_back()
 
+class JobViewHandler(util.RequestHandler):
+    def get(self):
+        self.response.out.write('Got this path: '+self.request.path)
+
+
 
 class CreatorHandler(util.RequestHandler):
     def get(self):
@@ -66,10 +71,6 @@ class InvalidateHandler(util.RequestHandler):
         character.put()
         self.redirect_back()
 
-
-class JobViewHandler(util.RequestHandler):
-    def get(self):
-        self.response.out.write('Got this path: '+self.request.path)
 
 def main():
     application = webapp.WSGIApplication([('/me', ProfileHandler),

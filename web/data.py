@@ -27,7 +27,7 @@ class Metric(OwnedModel):
                   metric=self,
                   value=value,
                   unit=unit,
-                  job=self.connected_to and Job.get(self.connected_to)).put()
+                  job=self.connected_to).put()
         return
 
 class MetricTxn(OwnedModel):
