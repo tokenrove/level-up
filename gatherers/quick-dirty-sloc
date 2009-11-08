@@ -1,0 +1,14 @@
+#!/bin/sh
+
+host=`hostname`
+directory=$1
+code=$2
+metric="quick-dirty-sloc $host:$directory"
+unit="lines of code"
+url="http://localhost:8080/metric"
+
+count=`sloccount $directory | \
+       awk '/^Total Physical Source/ { print gensub(",","","g",$9) }'`
+curl -F 'code='"$code" \
+     -F 'metric='"$metric" \
+     -F "value=$count" -F "unit=$unit" $url

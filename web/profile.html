@@ -6,9 +6,25 @@
     <title>Level Up!</title>
   </head>
   <body>
-    <p><b>{{ me.heroicAlias }}</b></p>
+    <p><b>{{ me.heroic_alias }}</b></p>
     <p>{{ me }}</p>
+
+    <hr>
+    <p>Gatherer code: {{ me.gatherer_code }}</p>
+    <p>Give this code to your gatherers to associate them with your
+    character.  Treat the code like a password, since it allows
+    anyone knowing it to submit new metrics for you.</p>
+
+    <hr>
+    {% for metric in metrics %}
+    <p>{{ metric.name }}</p>
+    {% endfor %}
+
+    <hr>
+    <p>
+    <a href="/me/invalidate">Invalidate code</a>
     <a href="/me/edit">Edit</a>
     <a href="/me/metrics">Metrics</a>
+    </p>
   </body>
 </html>

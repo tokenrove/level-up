@@ -11,9 +11,8 @@ class MainHandler(webapp.RequestHandler):
         user = users.get_current_user()
 
         template_values = {
-            'name': user or 'unnamed',
+            'user': user,
             'login_url': (user and users.create_logout_url("/") or users.create_login_url("/me")),
-            'login_text': (user and 'Sign-out' or 'Login'),
             'adminp': users.is_current_user_admin()
             }
         path = os.path.join(os.path.dirname(__file__), 'index.html')
