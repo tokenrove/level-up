@@ -24,7 +24,7 @@
     <tr>{% if metric.connected_to %}
       <form action="/me/metrics/connect" method="post">
 	  <input type=hidden name=back value="/me" />
-	  <input type=hidden name=job value="None" />
+	  <input type=hidden name=key value="{{ metric.key|urlencode }}" />
 	  <input type=submit value="Disconnect" />
       </form>
       {% else %}

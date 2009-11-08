@@ -20,7 +20,7 @@
     {% endfor %}
     {% endif %}
     {% if available_archetypes %}
-    <p><form action="/me/new-job" method="post">
+    <p><form action="/me/job/new" method="post">
 	<select name="archetype">
 	  {% for archetype in available_archetypes %}
 	  <option {% if forloop.first %}selected{% endif %}>{{ archetype.name|escape }}</option>

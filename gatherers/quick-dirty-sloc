@@ -5,7 +5,12 @@ directory=$1
 code=$2
 metric="quick-dirty-sloc $host:$directory"
 unit="lines of code"
-url="http://localhost:8080/metric"
+if [ "$3" != "" ]; then
+    url=$3
+else
+    url="http://localhost:8080/metric"
+    #url="https://level-up.appspot.com/metric"
+fi
 
 count=`sloccount $directory | \
        awk '/^Total Physical Source/ { print gensub(",","","g",$9) }'`

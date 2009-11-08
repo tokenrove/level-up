@@ -6,7 +6,7 @@
     <title>Level Up!</title>
   </head>
   <body>
-    <p>Last {{ txns|length }} transactions logged for {{ metric.name|escape }}:
+    <p>Last {{ txns|length }} transaction{{ txns|length|pluralize }} logged for {{ metric.name|escape }}:
       <table>
 	<tr class="legend-row"><td>Date</td><td>Value</td><td>Unit</td><td>Job</td><td>Ops</td></tr>
       {% for txn in txns %}

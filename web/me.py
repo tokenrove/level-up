@@ -74,7 +74,7 @@ class JobViewHandler(util.RequestHandler):
 def main():
     application = webapp.WSGIApplication([('/me', ProfileHandler),
                                           ('/me/invalidate', InvalidateHandler),
-                                          ('/me/new-job', NewJobHandler),
+                                          ('/me/job/new', NewJobHandler),
                                           ('/me/job', JobViewHandler),
                                           ('/me/create', CreatorHandler)],
                                          debug=True)
