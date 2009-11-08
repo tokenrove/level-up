@@ -13,10 +13,12 @@
 
     <!-- jobs -->
     <hr />
+    {% if jobs %}
     <p>Job{{ jobs|pluralize }}:</p>
     {% for job in jobs %}
     <p><a href="/me/job?key={{ job.key|urlencode }}">Job: {{ job.archetype.name|escape }}</a></p>
     {% endfor %}
+    {% endif %}
     {% if available_archetypes %}
     <p><form action="/me/new-job" method="post">
 	<select name="archetype">

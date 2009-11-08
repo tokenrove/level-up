@@ -11,21 +11,28 @@ import util
 ## preference-ized by user, et cetera.  But for now, this will do.
 max_results = 50
 
-class ConnectHandler(webapp.RequestHandler):
-    def get(self):
-        util.handle_with_template(self.response, 'connect.html',
-                                  { 'me': data.Character.by_user(users.get_current_user()).get(),
-                                    'jobs': data.Job.by_user(users.get_current_user()).fetch(max_results),
-                                    'metric' : data.Metric.get(self.request.get('key')) })
+class ConnectHandler(util.RequestHandler):
+    def post(self):
+        job = self.request.get('job')
+        metric = data.Metric.get(self.request.get('key'))
+        metric.connect_to = data.Job.get(job) or None
+        metric.put()
+        redirect_back()
 
-class DeleteHandler(webapp.RequestHandler):
+    def get(self):
+        handle_with_template('connect.html',
+                             { 'me': data.Character.by_user(users.get_current_user()).get(),
+                               'jobs': data.Job.by_user(users.get_current_user()).fetch(max_results),
+                               'metric' : data.Metric.get(self.request.get('key')) })
+
+class DeleteHandler(util.RequestHandler):
     def get(self):
         metric = data.Metric.get(self.request.get('key'))
         assert metric.owner == users.get_current_user()
         metric.delete()
-        self.redirect('/me')
+        redirect_back()
 
-class TxnsHandler(webapp.RequestHandler):
+class TxnsHandler(util.RequestHandler):
     def get(self):
         key = self.request.get('key')
         util.handle_with_template(self.response, 'txns.html',
