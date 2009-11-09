@@ -22,9 +22,13 @@ class ProfileHandler(util.RequestHandler):
         available_archetypes = filter(lambda x: x.name not in map(lambda y: y.archetype.name, jobs),
                                       data.Archetype.all().fetch(max_results))
         unconnected_metrics = data.Metric.by_user(user).filter('connected_to =',None).fetch(max_results)
+        xp_total = sum(map(lambda x: x.xp, jobs))
+        xp_percentage = map(lambda x: int(100.0*x.xp/xp_total), jobs)
         self.handle_with_template('profile.html',
                                   { 'me': character,
                                     'jobs': jobs,
+                                    'job_names': map(lambda x: x.archetype.name, jobs),
+                                    'xp_percentage': xp_percentage,
                                     'adminp': users.is_current_user_admin(),
                                     'available_archetypes': available_archetypes,
                                     'unconnected_metrics': unconnected_metrics })
@@ -67,6 +71,22 @@ class CreatorHandler(util.RequestHandler):
         self.redirect('/me')
 
 
+class EditHandler(util.RequestHandler):
+    def get(self):
+        user = users.get_current_user()
+        character = data.Character.by_user(user).get()
+        self.handle_with_template('edit.html', { 'me': character })
+
+    def post(self):
+        user = users.get_current_user()
+        character = data.Character.by_user(user).get()
+        assert character
+        character.heroic_alias = self.request.get('heroic_alias')
+        character.sex = self.request.get('sex')
+        character.put()
+        self.redirect('/me')
+
+
 class InvalidateHandler(util.RequestHandler):
     def get(self):
         character = data.Character.by_user(users.get_current_user()).get()
@@ -78,6 +98,7 @@ class InvalidateHandler(util.RequestHandler):
 
 def main():
     application = webapp.WSGIApplication([('/me', ProfileHandler),
+                                          ('/me/edit', EditHandler),
                                           ('/me/invalidate', InvalidateHandler),
                                           ('/me/job/new', NewJobHandler),
                                           ('/me/job', JobViewHandler),

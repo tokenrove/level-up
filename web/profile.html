@@ -9,7 +9,9 @@
     <!-- profile -->
     <p><img src="/images/mage.gif" /><b>{{ me.heroic_alias|escape }}</b></p>
     <a href="/me/edit">Edit</a>
-
+    {% if job_names %}
+    <img src="http://chart.apis.google.com/chart?cht=p&chd=t:{{ xp_percentage|join:"," }}&chs=250x100&chl={{ job_names|join:"|" }}" />
+    {% endif %}
 
     <!-- jobs -->
     <hr />
