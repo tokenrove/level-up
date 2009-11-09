@@ -5,3 +5,29 @@ body {
 tr.odd-row { background-color: #CCCCF0; }
 tr.even-row { background-color: #AAAAEE; }
 tr.legend-row { background-color: #8888AA; }
+
+div.xp-bar {
+    background-color: #ccc;
+    height: 20px;
+    width: 300px;
+}
+
+div.xp-bar-inner {
+    background-color: #666;
+    height: 20px;
+    border-right: 1px white solid;
+}
+
+div.xp-bar-current {
+    color: white;
+    margin-top:-19px;
+    padding-left:4px;
+}
+
+div.xp-bar-to-next {
+    text-align:right;
+    margin-top:-20px;
+    color:white;
+    padding-right:4px;
+    font-weight: bold;
+}

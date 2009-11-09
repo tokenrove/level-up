@@ -15,15 +15,29 @@
     <hr />
     {% if jobs %}
     <p>Job{{ jobs|pluralize }}:</p>
-    {% for job in jobs %}
-    <p><a href="/me/job?key={{ job.key|urlencode }}">Job: {{ job.archetype.name|escape }}</a></p>
-    {% endfor %}
+    <table>
+      {% for job in jobs %}
+      <tr class="job">
+	<td style="background-color: #abb">
+	  <a href="/me/job?key={{ job.key|urlencode }}">Level {{ job.level|escape }}
+	    {{ job.archetype.name|escape|capfirst }}</a>
+	</td>
+	<td>
+	  <div class="xp-bar">
+	    <div class="xp-bar-inner" style="width: {% widthratio job.xp job.xp_to_next_level 100 %}%;"></div>
+	    <div class="xp-bar-current">{{ job.xp }}</div>
+	    <div class="xp-bar-to-next">/ {{ job.xp_to_next_level }}</div>
+	  </div>
+	</td>
+      </tr>
+      {% endfor %}
+    </table>
     {% endif %}
     {% if available_archetypes %}
     <p><form action="/me/job/new" method="post">
 	<select name="archetype">
 	  {% for archetype in available_archetypes %}
-	  <option {% if forloop.first %}selected{% endif %}>{{ archetype.name|escape }}</option>
+	  <option>{{ archetype.name|escape }}</option>
 	  {% endfor %}
 	</select>
 	<input type=submit value="New job" /></form></p>
@@ -42,7 +56,7 @@
     {% endfor %}
     </table>
     {% endif %}
-    <p><a href="/me/metrics">All Metrics</a></p>
+    <p><a href="/me/metrics">All Metrics</a> <a href="/me/metrics/add">Add Metric</a></p>
 
 
     <hr />

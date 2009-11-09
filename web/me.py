@@ -44,7 +44,11 @@ class NewJobHandler(util.RequestHandler):
 
 class JobViewHandler(util.RequestHandler):
     def get(self):
-        self.response.out.write('Got this path: '+self.request.path)
+        user = users.get_current_user()
+        job = data.Job.get(self.request.get('key'))
+        assert(job.owner == user)
+        self.handle_with_template('job.html', { 'job': job,
+                                                'metrics': data.Metric.by_user(user).filter('connected_to =', job).fetch(max_results) })
 
 
 

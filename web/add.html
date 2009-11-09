@@ -1,0 +1,52 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <link type="text/css" rel="stylesheet" href="/stylesheets/main.css" />
+    <title>Level Up!</title>
+  </head>
+  <body>
+    <p>{{ me.heroic_alias|escape }}</p>
+    <p>Adding a metric:</p>
+    <p>There are three major types of metrics:
+      <dl><dt>automatic:</dt>
+	<dd>submitted by a gatherer on the client side, from a cron
+	job or commit trigger.</dd>
+	<dt>server-side:</dt>
+	<dd>gathered by the server, like an RSS feed.</dd>
+	<dt>manual:</dt>
+	<dd>manually input via a web form.</dd>
+    </dl></p>
+    <p>Obviously the first two are preferable to the third, but until
+    an automatic source of data can be found, it can be helpful to be
+    able to make manual submissions.  The primary purpose of this form
+    is to define the third type, but you can pre-declare any gatherer
+    here.</p>
+
+    <p>XXX: There should be tooltips here to assist with filling in
+      the form.</p>
+
+    <form action="/me/metrics/add" method="post">
+      <table>
+	<tr><td>Name</td><td><input type=text name=name /></td></tr>
+	<tr><td>Type</td>
+	  <td>
+	    <input type=radio value=manual name=type checked>Manual</input>
+	    <input type=radio value=client name=type>Client</input>
+	    <input type=radio value=server name=type>Server</input>
+	</td></tr>
+	<tr><td>Associated job</td>
+	  <td><select name=job>
+	      <option value="">None</option>
+	      {% for job in jobs %}
+	      <option value="{{ job.key }}"{% ifequal job.key default_job %} selected{% endifequal %}>
+		{{ job.archetype.name|escape }}
+	      </option>
+	      {% endfor %}
+	</select></td></tr>
+	<tr><td>Unit of measurement</td><td><input type=text name=unit /></td></tr>
+	<tr><td /><td><input type=submit value="Add" /></td></tr>
+      </table>
+    </form>
+  </body>
+</html>

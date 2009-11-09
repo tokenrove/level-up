@@ -13,7 +13,9 @@
       {% for metric in metrics %}
       <tr class="{% cycle odd-row,even-row %}">
 	<td>{{ metric.name|escape }}</td>
-	<td>{{ metric.connected_to|escape }}</td>
+	<td>{% if metric.connected_to %}
+	  level {{ metric.connected_to.level|escape }} {{ metric.connected_to.archetype.name|escape }}
+	  {% else %}none{% endif %}</td>
 	<td>
 	  <a href="/me/metrics/txns?key={{ metric.key|urlencode }}">txns</a>
 	  <a href="/me/metrics/connect?key={{ metric.key|urlencode }}">connect</a>

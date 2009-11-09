@@ -1,5 +1,6 @@
 import os
 import base64
+import math
 from google.appengine.ext import db
 
 class OwnedModel(db.Model):
@@ -17,18 +18,31 @@ class Job(OwnedModel):
     archetype = db.ReferenceProperty(Archetype, required=True)
     level = db.IntegerProperty(default=1)
     xp = db.IntegerProperty(default=0)
+    xp_to_next_level = db.IntegerProperty(default=1000)
+
+    def gain_xp(self, value):
+        self.xp += value
+        while(self.xp >= self.xp_to_next_level):
+            self.xp -= self.xp_to_next_level
+            self.xp_to_next_level = int(self.xp_to_next_level + math.ceil(self.xp_to_next_level * 1.3))
+            self.level += 1
+        self.put()
+
 
 class Metric(OwnedModel):
     name = db.StringProperty(required=True)
+    type = db.StringProperty(default='client') # may be client, server, or manual
+    unit = db.StringProperty()
     connected_to = db.ReferenceProperty(Job)
 
     def log(self, value, unit):
-        MetricTxn(owner=self.owner,
-                  metric=self,
-                  value=value,
-                  unit=unit,
-                  job=self.connected_to).put()
-        return
+        txn = MetricTxn(owner=self.owner,
+                        metric=self,
+                        value=value,
+                        unit=unit,
+                        job=self.connected_to)
+        txn.put()
+        txn.apply()
 
 class MetricTxn(OwnedModel):
     metric = db.ReferenceProperty(Metric, required=True)
@@ -37,6 +51,8 @@ class MetricTxn(OwnedModel):
     unit = db.StringProperty()
     job = db.ReferenceProperty(Job)
 
+    def apply(self):
+        if self.job: self.job.gain_xp(self.value)
 
 class VisualProperties(db.Model):
     height_in_cm = db.FloatProperty()

@@ -1,0 +1,42 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <link type="text/css" rel="stylesheet" href="/stylesheets/main.css" />
+    <title>Level Up!</title>
+  </head>
+  <body>
+    <h1>Level {{ job.level|escape }} {{ job.archetype.name|escape|capfirst }}</h1>
+    <div class="xp-bar">
+      <div class="xp-bar-inner" style="width: {% widthratio job.xp job.xp_to_next_level 100 %}%;"></div>
+      <div class="xp-bar-current">{{ job.xp }}</div>
+      <div class="xp-bar-to-next">/ {{ job.xp_to_next_level }}</div>
+    </div>
+
+    <p>Metrics:
+      <table>
+	<tr class="legend-row"><td>Name</td><td>Units</td><td>Conversion</td><td>Ops</td></tr>
+      {% for metric in metrics %}
+      <tr class="{% cycle odd-row,even-row %}">
+	<td>
+	  {% ifequal metric.type 'manual' %}
+	  <a href="/me/metrics/manual?key={{ metric.key|urlencode }}">{{ metric.name|escape }}</a>
+	  {% else %}
+	  {{ metric.name|escape }}
+	  {% endifequal %}
+	</td>
+	<td>{{ metric.unit }}</td>
+	<td>1:1</td>
+	<td>
+	  <a href="/me/metrics/txns?key={{ metric.key|urlencode }}">txns</a>
+	  <a href="/me/metrics/connect?key={{ metric.key|urlencode }}">connect</a>
+	  <a href="/me/metrics/delete?key={{ metric.key|urlencode }}">delete</a>
+	</td>
+      </tr>
+      {% endfor %}
+      </table>
+    </p>
+
+    <p><a href="/me/metrics">All Metrics</a> <a href="/me/metrics/add?default_job={{ job.key|urlencode }}">Add Metric</a></p>
+  </body>
+</html>
