@@ -2,7 +2,7 @@
 
 host=`hostname`
 directory=`pwd`
-code='9IOKVgiIZOM='
+code=`cat ~/.level-up-code`
 metric="git commit $host:$directory"
 unit="lines of code"
 url="http://localhost:8080/metric"

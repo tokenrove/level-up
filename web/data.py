@@ -80,7 +80,7 @@ class Metric(OwnedModel):
 
 class MetricTxn(OwnedModel):
     metric = db.ReferenceProperty(Metric, required=True)
-    created = db.DateProperty(auto_now_add=True)
+    created = db.DateTimeProperty(auto_now_add=True)
     value = db.IntegerProperty(required=True)
     unit = db.StringProperty()
     job = db.ReferenceProperty(Job)

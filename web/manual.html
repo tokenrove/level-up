@@ -8,7 +8,7 @@
   <body>
     <p>{{ me.heroic_alias|escape }}</p>
     <p>{{ metric.name|escape }} manual entry</p>
-    <form action="/me/metrics/manual" method="post">
+    <form action="/me/metric/manual" method="post">
       <input type=hidden name=key value="{{ metric.key|urlencode }}" />
       <table>
 	<tr><td>Value</td><td><input type=text name=value /></td><td><i>{{ metric.unit }}</i></td></tr>
