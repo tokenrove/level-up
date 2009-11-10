@@ -3,6 +3,7 @@
 from google.appengine.api import users
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp.util import run_wsgi_app
+import xml.etree.ElementTree
 
 import data
 import util
@@ -32,6 +33,7 @@ class MainHandler(util.RequestHandler):
                                     'adminp': users.is_current_user_admin()
                                     })
 
+
 class NewClassHandler(util.RequestHandler):
     def post(self):
         name = self.request.get('name')
@@ -40,9 +42,17 @@ class NewClassHandler(util.RequestHandler):
             data.Archetype(name=name).put()
         self.redirect_back()
 
+
+class FeedHandler(util.RequestHandler):
+    def get(self):
+        user = data.Character.get(self.request.get('key')).owner
+        events = data.FeedEvent.all().filter('owner =',user).order('-created').fetch(max_results)
+        self.response.out.write(str(map(lambda x: x.type, events)))
+
 def main():
     application = webapp.WSGIApplication([('/', MainHandler),
-                                          ('/admin/new-class', NewClassHandler)],
+                                          ('/admin/new-class', NewClassHandler),
+                                          ('/feed', FeedHandler)],
                                          debug=True)
     run_wsgi_app(application)
 

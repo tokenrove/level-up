@@ -59,21 +59,32 @@ class Job(OwnedModel):
         while(self.xp >= self.xp_to_next_level):
             self.xp -= self.xp_to_next_level
             self.xp_to_next_level = int(self.xp_to_next_level + math.ceil(self.xp_to_next_level * 1.3))
-            self.level += 1
+            self.level_up()
         self.put()
 
+    def level_up(self):
+        self.level += 1
+        self.put()
+        FeedEvent(owner=self.owner, type='level up', value=str(self.level), job=self).put()
+
+class FeedEvent(OwnedModel):
+    type = db.StringProperty(required=True)
+    value = db.StringProperty()
+    job = db.ReferenceProperty(Job)
+    created = db.DateTimeProperty(auto_now_add=True)
 
 class Metric(OwnedModel):
     name = db.StringProperty(required=True)
     type = db.StringProperty(default='client') # may be client, server, or manual
+    ratio_n = db.IntegerProperty(default=1)
+    ratio_d = db.IntegerProperty(default=1)
     unit = db.StringProperty()
     connected_to = db.ReferenceProperty(Job)
 
-    def log(self, value, unit):
+    def log(self, value):
         txn = MetricTxn(owner=self.owner,
                         metric=self,
-                        value=value,
-                        unit=unit,
+                        value=int((value*self.ratio_n)/self.ratio_d),
                         job=self.connected_to)
         txn.put()
         txn.apply()
@@ -82,7 +93,6 @@ class MetricTxn(OwnedModel):
     metric = db.ReferenceProperty(Metric, required=True)
     created = db.DateTimeProperty(auto_now_add=True)
     value = db.IntegerProperty(required=True)
-    unit = db.StringProperty()
     job = db.ReferenceProperty(Job)
 
     def apply(self):
@@ -105,10 +115,11 @@ class Character(OwnedModel):
     # metrics
     gatherer_code = db.StringProperty(required=True)
 
-    def register_metric(self, name):
+    def register_metric(self, name, unit, ratio='1:1', type='client'):
         metric = Metric.all().filter('owner =', self.owner).filter('name =', name).get();
         if metric == None:
-            metric = Metric(owner=self.owner, name=name)
+            (ratio_n, ratio_d) = map(int, ratio.split(':'))
+            metric = Metric(owner=self.owner, name=name, unit=unit, ratio_n=ratio_n, ratio_d=ratio_d, type=type)
             metric.put()
         return metric
 

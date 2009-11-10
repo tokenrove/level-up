@@ -26,8 +26,8 @@
 	  {{ metric.name|escape }}
 	  {% endifequal %}
 	</td>
-	<td>{{ metric.unit }}</td>
-	<td>1:1</td>
+	<td>{{ metric.unit|escape }}</td>
+	<td>{{ metric.ratio_n }}:{{ metric.ratio_d }}</td>
 	<td>
 	  <a href="/me/metric/txns?key={{ metric.key|urlencode }}">txns</a>
 	  <a href="/me/metric/connect?key={{ metric.key|urlencode }}">connect</a>
