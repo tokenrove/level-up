@@ -24,7 +24,7 @@ class Job(OwnedModel):
         self.xp += value
         while(self.xp >= self.xp_to_next_level):
             self.xp -= self.xp_to_next_level
-            self.xp_to_next_level = int(self.xp_to_next_level + math.ceil(self.xp_to_next_level * 1.3))
+            self.xp_to_next_level = int(self.xp_to_next_level + self.level*1000)
             self.level += 1
         self.put()
 
