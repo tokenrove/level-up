@@ -8,7 +8,7 @@
   <body>
     <p>Last {{ txns|length }} transaction{{ txns|length|pluralize }} logged for {{ metric.name|escape }}:
       <table>
-	<tr class="legend-row"><td>Date</td><td>Value</td><td>Unit</td><td>Job</td><td>Ops</td></tr>
+	<tr class="legend-row"><th>Date</th><th>Value</th><th>Unit</th><th>Job</th><th>Ops</th></tr>
       {% for txn in txns %}
       <tr class="{% cycle odd-row,even-row %}">
 	<td>{{ txn.created|escape }}</td>

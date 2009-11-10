@@ -6,23 +6,27 @@
     <title>Level Up!</title>
   </head>
   <body>
-    {% if user %}
-    <p>Hello, {{ user.nickname|escape }} {% if adminp %}(<b>administrator</b>){% endif %}</p>
-    <p><a href="/me"><img src="{% if archetype %}{{ archetype.sprite|urlencode }}{% else %}/images/onion.png{% endif %}" />My profile.</a></p>
-    {% endif %}
-    <p><a href="{{ login_url }}">{% if user %}Sign out{% else %}Log in{% endif %}</a></p>
+    <div style="width: 30%; float: right;">
+      <div style="height: 8em;">
+	{% if user %}
+	<p>Hello, {{ user.nickname|escape }} {% if adminp %}(<b>administrator</b>){% endif %}</p>
+	<p><a href="/me"><img src="{% if archetype %}{{ archetype.sprite|urlencode }}{% else %}/images/onion.png{% endif %}" />My profile.</a></p>
+	{% endif %}
+	<p><a href="{{ login_url }}">{% if user %}Sign out{% else %}Log in{% endif %}</a></p>
+      </div>
 
-    <hr />
-    <p><h2>Caveats</h2>
-      <ul>
-	<li>This software is nowhere near complete.</li>
-	<li>This software is in no way secure.</li>
-	<li>Use at your own risk.</li>
-      </ul>
-    </p>
+      <div class="round">
+	<p><center><h3>Caveats</h3></center>
+	  <ul>
+	    <li>This software is not complete.</li>
+	    <li>This software is not secure.</li>
+	    <li>Use at your own risk.</li>
+	  </ul>
+	</p>
+      </div>
+    </div>
 
     {% if news %}
-    <hr />
     <p><h2>What's new</h2>
       <dl>
       {% for item in news %}
@@ -38,10 +42,10 @@
     <p><h2>Hall of Heroes</h2>
       <table>
 	<tr class="legend-row">
-	  <td />
-	  <td>Name</td>
-	  <td>Primary class</td>
-	  <td>Secondary classes</td>
+	  <th />
+	  <th>Name</th>
+	  <th>Primary class</th>
+	  <th>Secondary classes</th>
 	</tr>
 	{% for hero in hall_of_heroes %}
 	<tr class="{% cycle odd-row,even-row %}">

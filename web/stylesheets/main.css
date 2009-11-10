@@ -2,9 +2,46 @@ body {
     background-color: #DDDDFF;
 }
 
+table {
+    border-collapse: collapse;
+    border-width: 0;
+    empty-cells: show;
+    border-top: 1px solid #333;
+    border-bottom: 1px solid #333;
+}
+td { //border-bottom: 1px solid #ddd;
+     padding:2px .4em;
+     border-right: 1px solid #333;
+   }
+
+tr { border-left: 1px solid #333; border-right: 1px solid #333; }
+
 tr.odd-row { background-color: #CCCCF0; }
 tr.even-row { background-color: #AAAAEE; }
 tr.legend-row { background-color: #8888AA; }
+
+input,select,textarea,option{font-family:inherit;font-size:inherit}
+
+ul {
+    margin-left: -1em;
+    padding-left: -1em;
+}
+
+div.round {
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border: 1px solid #000;
+    padding: 0.4em 0.4em;
+}
+
+div.gatherer-code {
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    padding: 0.4em 0.2em;
+    border: 1px solid #000;
+    background-color: #ccc;
+    align: left;
+}
 
 div.xp-bar {
     background-color: #ccc;
@@ -27,7 +64,7 @@ div.xp-bar-current {
 div.xp-bar-to-next {
     text-align:right;
     margin-top:-20px;
-    color:white;
+    color: black;
     padding-right:4px;
     font-weight: bold;
 }

@@ -9,7 +9,7 @@
     <p>Got {{ metrics|length }} of {{ count|escape }} metrics.</p>
     <p>
       <table>
-	<tr class="legend-row"><td>Name</td><td>Job</td><td>Ops</td></tr>
+	<tr class="legend-row"><th>Name</th><th>Job</th><th>Ops</th></tr>
       {% for metric in metrics %}
       <tr class="{% cycle odd-row,even-row %}">
 	<td>{{ metric.name|escape }}</td>

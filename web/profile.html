@@ -16,7 +16,6 @@
     <!-- jobs -->
     <hr />
     {% if jobs %}
-    <p>Job{{ jobs|pluralize }}:</p>
     <table>
       {% for job in jobs %}
       <tr class="job">
@@ -67,11 +66,14 @@
 
     <hr />
     <!-- gatherer config -->
-    <p>Gatherer code: {{ me.gatherer_code|escape }}</p>
-    <a href="/me/invalidate">Invalidate code</a>
-    <p>Give this code to your gatherers to associate them with your
-    character.  Treat the code like a password, since it allows
-    anyone knowing it to submit new metrics for you.</p>
+    <div class="round" style="width: 30%">
+      <div class="gatherer-code"><i>Gatherer code: </i><tt>{{ me.gatherer_code|escape }}</tt></div>
+
+      <p>Give this code to your gatherers to associate them with your
+	character.  Treat the code like a password, since it allows
+	anyone knowing it to submit new metrics for you.</p>
+      <p><a href="/me/invalidate">Invalidate code</a></p>
+    </div>
 
     <!-- admin tools -->
     {% if adminp %}
