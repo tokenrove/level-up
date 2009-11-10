@@ -43,16 +43,32 @@ class NewClassHandler(util.RequestHandler):
         self.redirect_back()
 
 
+class MigrationHandler(util.RequestHandler):
+    def post(self):
+        fn = self.request.get('fn')
+        assert fn in data.migration_fns
+        self.response.out.write('''
+Eventually this will fork a task instead of doing this here.
+However, this is not the case presently, so here's your output:
+''')
+        data.migration_fns[fn](self.response.out)
+
+
 class FeedHandler(util.RequestHandler):
     def get(self):
-        user = data.Character.get(self.request.get('key')).owner
-        events = data.FeedEvent.all().filter('owner =',user).order('-created').fetch(max_results)
-        self.response.out.write(str(map(lambda x: x.type, events)))
+        character = data.Character.get(self.request.get('key'))
+        events = data.FeedEvent.all().filter('owner =',character.owner).order('-created').fetch(max_results)
+        self.response.headers['content-type'] = 'text/xml; charset="utf-8"'
+        self.handle_with_template('feed.xml',
+                                  { 'me': character,
+                                    'updated': events and events[0].created or 'never',
+                                    'events': events })
 
 def main():
     application = webapp.WSGIApplication([('/', MainHandler),
                                           ('/admin/new-class', NewClassHandler),
-                                          ('/feed', FeedHandler)],
+                                          ('/admin/migrate', MigrationHandler),
+                                          ('/feed.xml', FeedHandler)],
                                          debug=True)
     run_wsgi_app(application)
 

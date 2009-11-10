@@ -1,6 +1,7 @@
 import os
 import base64
 import math
+import datetime
 from google.appengine.ext import db
 
 class OwnedModel(db.Model):
@@ -65,11 +66,13 @@ class Job(OwnedModel):
     def level_up(self):
         self.level += 1
         self.put()
-        FeedEvent(owner=self.owner, type='level up', value=str(self.level), job=self).put()
+        FeedEvent(owner=self.owner, type='level up', value=str(self.level),
+                  xp_to_next_level=self.xp_to_next_level-self.xp, job=self).put()
 
 class FeedEvent(OwnedModel):
     type = db.StringProperty(required=True)
     value = db.StringProperty()
+    xp_to_next_level = db.IntegerProperty()
     job = db.ReferenceProperty(Job)
     created = db.DateTimeProperty(auto_now_add=True)
 
@@ -112,6 +115,7 @@ class Character(OwnedModel):
     sex = db.StringProperty(choices=set(["male","female","other"])) # not bool in case a third sex joins
     visual_properties = VisualProperties()
     location = db.GeoPtProperty()
+    created = db.DateProperty(auto_now_add=True)
     # metrics
     gatherer_code = db.StringProperty(required=True)
 
@@ -131,3 +135,14 @@ def fresh_gatherer_code():
     r = base64.urlsafe_b64encode(os.urandom(8))
     assert Character.by_code(r).count(1) == 0 # XXX not the right thing, but better than nothing.
     return r
+
+
+# XXX this is what a lack of usable lambdas has done to us, you fools!
+def character_created(out):
+    for char in Character.all():
+        if char.created == None:
+            char.created = datetime.datetime.now()
+            char.put()
+            out.write("Updated %s (%s)\n" % char.key, char.heroic_alias)
+
+migration_fns = { 'character_created': character_created }

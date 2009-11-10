@@ -28,9 +28,10 @@ class ProfileHandler(util.RequestHandler):
                                     'archetype': jobs and jobs[0].archetype._static,
                                     'job_names': map(lambda x: x.archetype.name, jobs),
                                     'xp_percentage': data.calculate_xp_percentage(jobs),
-                                    'adminp': users.is_current_user_admin(),
                                     'available_archetypes': available_archetypes,
-                                    'unconnected_metrics': unconnected_metrics })
+                                    'unconnected_metrics': unconnected_metrics,
+                                    'admin_migration_fns': data.migration_fns,
+                                    'adminp': users.is_current_user_admin() })
 
 class ViewHandler(util.RequestHandler):
     def get(self):
