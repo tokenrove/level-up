@@ -13,10 +13,10 @@
       <tr class="{% cycle odd-row,even-row %}">
 	<td>{{ txn.created|escape }}</td>
 	<td>{{ txn.value|escape }}</td>
-	<td>{{ txn.unit|escape }}</td>
+	<td>{{ txn.metric.unit|escape }}</td>
 	<td>{{ txn.job.archetype.name|escape }}</td>
 	<td>
-	  <a href="/me/metrics/rollback?key={{ txn.key|urlencode }}">rollback</a>
+	  <a href="/me/metric/rollback?key={{ txn.key|urlencode }}">rollback</a>
 	</td>
       </tr>
       {% endfor %}

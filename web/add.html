@@ -23,10 +23,18 @@
     is to define the third type, but you can pre-declare any gatherer
     here.</p>
 
+    <p>For automatic client-side metrics, stick your gatherer code in
+      a file called <tt>~/.level-up-gatherer-code</tt>.</p>
+
+    <p>Note that all XP values are integers, and as such, the
+      conversion ratio given below (also with integer numerator and
+      denominator) will silently truncate fractional XP, like all
+      classic RPGs.</p>
+
     <p>XXX: There should be tooltips here to assist with filling in
       the form.</p>
 
-    <form action="/me/metrics/add" method="post">
+    <form action="/me/metric/add" method="post">
       <table>
 	<tr><td>Name</td><td><input type=text name=name /></td></tr>
 	<tr><td>Type</td>
@@ -44,6 +52,7 @@
 	      </option>
 	      {% endfor %}
 	</select></td></tr>
+	<tr><td>Conversion rate <i>(XP:units)</i></td><td><input type=text name=ratio_n value="1" size=3 format="*N" style="text-align: right;" />:<input type=text name=ratio_d value="1" size=1 format="*N" /></td></tr>
 	<tr><td>Unit of measurement</td><td><input type=text name=unit /></td></tr>
 	<tr><td /><td><input type=submit value="Add" /></td></tr>
       </table>

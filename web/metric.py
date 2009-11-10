@@ -30,9 +30,13 @@ class AddHandler(util.RequestHandler):
         user=users.get_current_user()
         type = self.request.get('type')
         assert type in ['manual','client','server']
+        name = self.request.get('name')
+        assert len(name) > 2
         metric = data.Metric(owner=user,
-                             name=self.request.get('name'),
+                             name=name,
                              unit=self.request.get('unit'),
+                             ratio_n=int(self.request.get('ratio_n')) or 1,
+                             ratio_d=int(self.request.get('ratio_d')) or 1,
                              type=type)
         job = self.request.get('job') and data.Job.get(self.request.get('job'))
         if job: metric.connected_to = job
@@ -76,9 +80,12 @@ class GathererHandler(util.RequestHandler):
         if character == None: return self.error(403)
 
         value = int(self.request.get('value'))
+        name = self.request.get('metric')
+        assert len(name) > 2
         unit = self.request.get('unit')
-        metric = character.register_metric(self.request.get('metric'))
-        metric.log(value, unit)
+        ratio = self.request.get('ratio') or '1:1'
+        metric = character.register_metric(name, unit, ratio, type='client')
+        metric.log(value)
 
         self.handle_with_template('accepted.html',
                                   { 'metric': metric,
@@ -90,7 +97,7 @@ class ManualHandler(util.RequestHandler):
     def post(self):
         value = int(self.request.get('value'))
         metric = data.Metric.get(self.request.get('key'))
-        metric.log(value, metric.unit)
+        metric.log(value)
         self.redirect_back()
 
     def get(self):
@@ -104,13 +111,13 @@ class RollbackHandler(util.RequestHandler):
         self.response.out.write('Not here yet, but eventually this will let you undo and repeat transactions.')
 
 def main():
-    application = webapp.WSGIApplication([('/me/metrics', ViewHandler),
-                                          ('/me/metrics/connect', ConnectHandler),
-                                          ('/me/metrics/txns', TxnsHandler),
-                                          ('/me/metrics/delete', DeleteHandler),
-                                          ('/me/metrics/add', AddHandler),
-                                          ('/me/metrics/rollback', RollbackHandler),
-                                          ('/me/metrics/manual', ManualHandler),
+    application = webapp.WSGIApplication([('/me/metric', ViewHandler),
+                                          ('/me/metric/connect', ConnectHandler),
+                                          ('/me/metric/txns', TxnsHandler),
+                                          ('/me/metric/delete', DeleteHandler),
+                                          ('/me/metric/add', AddHandler),
+                                          ('/me/metric/rollback', RollbackHandler),
+                                          ('/me/metric/manual', ManualHandler),
                                           ('/metric', GathererHandler)],
                                          debug=True)
     run_wsgi_app(application)

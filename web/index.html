@@ -8,8 +8,10 @@
   <body>
     {% if user %}
     <p>Hello, {{ user.nickname|escape }} {% if adminp %}(<b>administrator</b>){% endif %}</p>
-    <p><a href="/me"><img src="/images/mage.gif" />My profile.</a></p>
+    <p><a href="/me"><img src="{% if archetype %}{{ archetype.sprite|urlencode }}{% else %}/images/onion.png{% endif %}" />My profile.</a></p>
     {% endif %}
+    <p><a href="{{ login_url }}">{% if user %}Sign out{% else %}Log in{% endif %}</a></p>
+
     <hr />
     <p><h2>Caveats</h2>
       <ul>
@@ -17,8 +19,46 @@
 	<li>This software is in no way secure.</li>
 	<li>Use at your own risk.</li>
       </ul>
-      <hr /></p>
-    <p><h2>Hall of Fame goes here</h2>
-    <p><a href="{{ login_url }}">{% if user %}Sign out{% else %}Log in{% endif %}</a></p>
+    </p>
+
+    {% if news %}
+    <hr />
+    <p><h2>What's new</h2>
+      <dl>
+      {% for item in news %}
+      <dt><b>{{ item.title }}</b> <i>({{ item.created.date }})</i></dt>
+      <dd>{{ item.body }}</dd>
+      {% endfor %}
+      </dl>
+    </p>
+    {% endif %}
+
+    {% if hall_of_heroes %}
+    <hr />
+    <p><h2>Hall of Heroes</h2>
+      <table>
+	<tr class="legend-row">
+	  <td />
+	  <td>Name</td>
+	  <td>Primary class</td>
+	  <td>Secondary classes</td>
+	</tr>
+	{% for hero in hall_of_heroes %}
+	<tr class="{% cycle odd-row,even-row %}">
+	  <td><img src="{% if hero.archetype %}{{ hero.archetype.sprite|urlencode }}{% else %}/images/onion.png{% endif %}" /></td>
+	  <td>{% if user %}
+	    <a href="/view?key={{ hero.character.key|urlencode }}">{{ hero.character.heroic_alias|escape }}</a>
+	    {% else %}
+	    {{ hero.character.heroic_alias|escape }}
+	    {% endif %}</td>
+	  <td>Level {{ hero.primary_class.level|escape }}
+	    {{ hero.primary_class.archetype.name|escape|capfirst }}
+	  </td>
+	  <td>{% for class in hero.secondary_classes %}{{ class.archetype.name|escape|capfirst }}({{ class.level|escape }}){% if not forloop.last %}, {% endif %}{% endfor %}</td>
+	</tr>
+	{% endfor %}
+    </table></p>
+    {% endif %}
+
   </body>
 </html>

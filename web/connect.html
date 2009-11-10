@@ -13,7 +13,7 @@
     <tr class="{% cycle odd-row,even-row %}">
       <td>Level {{ job.level|escape }}</td>
       <td>{{ job.archetype.name|escape|capfirst }}</td>
-      <td><form action="/me/metrics/connect" method="post">
+      <td><form action="/me/metric/connect" method="post">
 	  <input type=hidden name=back value="/me" />
 	  <input type=hidden name=key value="{{ metric.key|urlencode }}" />
 	  <input type=hidden name=job value="{{ job.key|urlencode }}" />
@@ -22,7 +22,7 @@
     </tr>
     {% endfor %}
     <tr>{% if metric.connected_to %}
-      <form action="/me/metrics/connect" method="post">
+      <form action="/me/metric/connect" method="post">
 	  <input type=hidden name=back value="/me" />
 	  <input type=hidden name=key value="{{ metric.key|urlencode }}" />
 	  <input type=submit value="Disconnect" />

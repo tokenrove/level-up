@@ -6,6 +6,7 @@
     <title>Level Up!</title>
   </head>
   <body>
+    <img src="{% if archetype %}{{ archetype.sprite|urlencode }}{% else %}/images/onion.png{% endif %}" />
     <h1>Level {{ job.level|escape }} {{ job.archetype.name|escape|capfirst }}</h1>
     <div class="xp-bar">
       <div class="xp-bar-inner" style="width: {% widthratio job.xp job.xp_to_next_level 100 %}%;"></div>
@@ -20,23 +21,23 @@
       <tr class="{% cycle odd-row,even-row %}">
 	<td>
 	  {% ifequal metric.type 'manual' %}
-	  <a href="/me/metrics/manual?key={{ metric.key|urlencode }}">{{ metric.name|escape }}</a>
+	  <a href="/me/metric/manual?key={{ metric.key|urlencode }}">{{ metric.name|escape }}</a>
 	  {% else %}
 	  {{ metric.name|escape }}
 	  {% endifequal %}
 	</td>
-	<td>{{ metric.unit }}</td>
-	<td>1:1</td>
+	<td>{{ metric.unit|escape }}</td>
+	<td>{{ metric.ratio_n }}:{{ metric.ratio_d }}</td>
 	<td>
-	  <a href="/me/metrics/txns?key={{ metric.key|urlencode }}">txns</a>
-	  <a href="/me/metrics/connect?key={{ metric.key|urlencode }}">connect</a>
-	  <a href="/me/metrics/delete?key={{ metric.key|urlencode }}">delete</a>
+	  <a href="/me/metric/txns?key={{ metric.key|urlencode }}">txns</a>
+	  <a href="/me/metric/connect?key={{ metric.key|urlencode }}">connect</a>
+	  <a href="/me/metric/delete?key={{ metric.key|urlencode }}">delete</a>
 	</td>
       </tr>
       {% endfor %}
       </table>
     </p>
 
-    <p><a href="/me/metrics">All Metrics</a> <a href="/me/metrics/add?default_job={{ job.key|urlencode }}">Add Metric</a></p>
+    <p><a href="/me/metric">All Metrics</a> <a href="/me/metric/add?default_job={{ job.key|urlencode }}">Add Metric</a></p>
   </body>
 </html>

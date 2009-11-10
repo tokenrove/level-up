@@ -10,6 +10,12 @@ indexes:
 # automatically uploaded to the admin console when you next deploy
 # your application using appcfg.py.
 
+- kind: FeedEvent
+  properties:
+  - name: owner
+  - name: created
+    direction: desc
+
 - kind: Job
   properties:
   - name: owner
