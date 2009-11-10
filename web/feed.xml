@@ -4,15 +4,15 @@
   <!-- <subtitle>A subtitle.</subtitle> -->
   <link href="http://level-up.appspot.com/feed.xml?key={{ me.key|urlencode }}" rel="self" />
   <link href="http://level-up.appspot.com/" />
-  <id>tag:level-up.appspot.com,{{ me.created|urlencode }}:{{ me.key|urlencode }}</id>
-  <updated>{{ updated }}</updated>
+  <id>tag:level-up.appspot.com,{{ me.created.isoformat|urlencode }}:{{ me.key|urlencode }}</id>
+  <updated>{{ updated.isoformat }}</updated>
   <!-- <author> <name>John Doe</name> <email>johndoe@example.com</email> </author> -->
 
   {% for event in events %}
   <entry>
     <title>{{ me.heroic_alias|escape }} levels up!</title>
     <id>tag:level-up.appspot.com,{{ event.created|urlencode }}:{{ event.key|urlencode }}</id>
-    <updated>{{ event.created }}</updated>
+    <updated>{{ event.created.isoformat }}</updated>
     <summary>{{ me.heroic_alias|escape }} achieves level {{ event.value|escape }} as a {{ event.job.archetype.name|escape }}.  Congratulations!
 
       {{ event.xp_to_next_level }} XP to next level.</summary>

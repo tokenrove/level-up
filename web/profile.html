@@ -7,7 +7,7 @@
   </head>
   <body>
     <!-- profile -->
-    <p><img src="{% if archetype %}{{ archetype.sprite|urlencode }}{% else %}/images/mage.gif{% endif %}" /><b>{{ me.heroic_alias|escape }}</b>
+    <p><img src="{% if archetype %}{{ archetype.sprite|urlencode }}{% else %}/images/onion.png{% endif %}" /><b>{{ me.heroic_alias|escape }}</b>
       <a href="/me/edit">Edit</a> <a href="/feed.xml?key={{ me.key|urlencode }}">Atom feed</a></p>
     {% if xp_percentage %}
     <img src="http://chart.apis.google.com/chart?chf=bg,s,0000ff00&cht=p&chd=t:{{ xp_percentage|join:"," }}&chs=250x100&chl={{ job_names|join:"|" }}" />
@@ -78,10 +78,19 @@
     <hr />
     <p><b>Warning:</b> You are logged in as an administrator.  Changes
       made here will have an effect on the global application experience.</p>
+    <p><form action="/admin/post-news" method="post">
+	<table>
+	  <tr><td>Title:</td> <td><input type=text name=title /></td></tr>
+	  <tr><td /><td><textarea name=body rows=4 cols=70></textarea></td></tr>
+	  <tr><td /><td><input type=submit value="Post News" /></td></tr>
+	</table>
+    </form></p>
+
     <p><form action="/admin/new-class" method="post">
 	<input type=text name=name />
 	<input type=submit value="Register new class" />
     </form></p>
+
     {% if admin_migration_fns %}
     <p><form action="/admin/migrate" method="post">
 	<select name=fn>
@@ -92,6 +101,7 @@
 	<input type=submit value="Perform migration" />
     </form></p>
     {% endif %}
+
     {% endif %}
   </body>
 </html>

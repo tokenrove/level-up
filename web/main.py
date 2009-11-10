@@ -26,6 +26,7 @@ class MainHandler(util.RequestHandler):
 
         self.handle_with_template('index.html',
                                   { 'user': user,
+                                    'news': data.SiteNews.all().order('-created').fetch(5),
                                     'archetype': top_job and top_job.archetype._static,
                                     'hall_of_heroes': self.generate_hall_of_heroes(),
                                     'login_url': user and users.create_logout_url("/") or
@@ -36,15 +37,24 @@ class MainHandler(util.RequestHandler):
 
 class NewClassHandler(util.RequestHandler):
     def post(self):
+        assert users.is_current_user_admin()
         name = self.request.get('name')
         if len(name) < 2: return self.complain_and_redirect()
-        if users.is_current_user_admin() and data.Archetype.all().filter('name =', name).count(1) == 0:
+        if data.Archetype.all().filter('name =', name).count(1) == 0:
             data.Archetype(name=name).put()
         self.redirect_back()
 
 
+class PostNewsHandler(util.RequestHandler):
+    def post(self):
+        assert users.is_current_user_admin()
+        data.SiteNews(title=self.request.get('title'),
+                      body=self.request.get('body')).put()
+        self.redirect('/')
+
 class MigrationHandler(util.RequestHandler):
     def post(self):
+        assert users.is_current_user_admin()
         fn = self.request.get('fn')
         assert fn in data.migration_fns
         self.response.out.write('''
@@ -67,6 +77,7 @@ class FeedHandler(util.RequestHandler):
 def main():
     application = webapp.WSGIApplication([('/', MainHandler),
                                           ('/admin/new-class', NewClassHandler),
+                                          ('/admin/post-news', PostNewsHandler),
                                           ('/admin/migrate', MigrationHandler),
                                           ('/feed.xml', FeedHandler)],
                                          debug=True)

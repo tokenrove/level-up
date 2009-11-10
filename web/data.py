@@ -38,14 +38,15 @@ class Archetype(db.Model):
 
     @cached_property
     def _static(self):
+        # XXX eventually, load from /static
         #path = os.path.join(os.path.dirname(__file__), 'static/class/%s.json' % self.name)
         return {
-            'programmer': {
-                'sprite': '/images/fighter.gif'
-                },
-            'musician': {
-                'sprite': '/images/mage.gif'
-                }
+            'programmer': { 'sprite': '/images/bmage.png' },
+            'musician': { 'sprite': '/images/thief.png' },
+            'writer': {'sprite': '/images/rmage.png'},
+            'artist': {'sprite': '/images/wmage.png'},
+            'trainer' : {'sprite': '/images/ninja.png'},
+            'scholar' : {'sprite': '/images/sage.png'}
             }.get(self.name, lambda: {})
 
 
@@ -74,6 +75,11 @@ class FeedEvent(OwnedModel):
     value = db.StringProperty()
     xp_to_next_level = db.IntegerProperty()
     job = db.ReferenceProperty(Job)
+    created = db.DateTimeProperty(auto_now_add=True)
+
+class SiteNews(db.Model):
+    title = db.StringProperty(required=True)
+    body = db.TextProperty(required=True)
     created = db.DateTimeProperty(auto_now_add=True)
 
 class Metric(OwnedModel):

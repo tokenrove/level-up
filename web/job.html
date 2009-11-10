@@ -6,7 +6,7 @@
     <title>Level Up!</title>
   </head>
   <body>
-    <img src="{% if archetype %}{{ archetype.sprite|urlencode }}{% else %}/images/mage.gif{% endif %}" />
+    <img src="{% if archetype %}{{ archetype.sprite|urlencode }}{% else %}/images/onion.png{% endif %}" />
     <h1>Level {{ job.level|escape }} {{ job.archetype.name|escape|capfirst }}</h1>
     <div class="xp-bar">
       <div class="xp-bar-inner" style="width: {% widthratio job.xp job.xp_to_next_level 100 %}%;"></div>

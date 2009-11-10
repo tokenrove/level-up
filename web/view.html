@@ -7,7 +7,7 @@
   </head>
   <body>
     <!-- profile -->
-    <p><img src="{% if archetype %}{{ archetype.sprite|urlencode }}{% else %}/images/mage.gif{% endif %}" /><b>{{ me.heroic_alias|escape }}</b></p>
+    <p><img src="{% if archetype %}{{ archetype.sprite|urlencode }}{% else %}/images/onion.png{% endif %}" /><b>{{ me.heroic_alias|escape }}</b></p>
     {% if xp_percentage %}
     <img src="http://chart.apis.google.com/chart?chf=bg,s,0000ff00&cht=p&chd=t:{{ xp_percentage|join:"," }}&chs=250x100&chl={{ job_names|join:"|" }}" />
     {% endif %}

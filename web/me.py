@@ -36,7 +36,7 @@ class ProfileHandler(util.RequestHandler):
 class ViewHandler(util.RequestHandler):
     def get(self):
         character = data.Character.get(self.request.get('key'))
-        jobs = data.Job.by_user(character.owner).fetch(max_results)
+        jobs = data.Job.by_user(character.owner).order('-level').fetch(max_results)
         self.handle_with_template('view.html',
                                   { 'viewer': users.get_current_user(),
                                     'me': character,
