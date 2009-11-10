@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% block profile %}
+<p><img src="{% if archetype %}{{ archetype.sprite|urlencode }}{% else %}/images/onion.png{% endif %}" /><b>{{ me.heroic_alias|escape }}</b></p>
+{% endblock profile %}
+
+{% block levels_chart %}
+{% if level_percentage %}
+<img src="http://chart.apis.google.com/chart?chf=bg,s,0000ff00&cht=p&chd=t:{{ level_percentage|join:"," }}&chs=250x100&chl={{ job_names|join:"|" }}" />
+{% endif %}
+{% endblock levels_chart %}
+
+{% block profile_tools %}{% endblock profile_tools %}
+
+{% block jobs %}
+<hr />
+{% if jobs %}
+<table>
+  {% for job in jobs %}
+  <tr class="job">
+    <td style="background-color: #abb">
+      {% block job_url %}Level {{ job.level|escape }} {{ job.archetype.name|escape|capfirst }}{% endblock %}
+    </td>
+    <td>
+      <div class="xp-bar">
+	<div class="xp-bar-inner" style="width: {% widthratio job.xp job.xp_to_next_level 100 %}%;"></div>
+	<div class="xp-bar-current">{{ job.xp }}</div>
+	<div class="xp-bar-to-next">/ {{ job.xp_to_next_level }}</div>
+      </div>
+    </td>
+  </tr>
+  {% endfor %}
+</table>
+{% endif %}
+{% endblock jobs %}
+{% block job_tools %}{% endblock job_tools %}
+
+{% block metrics %}{% endblock %}
+
+{% block companions %}{% endblock %}
+{% block companion_tools %}{% endblock companion_tools %}
+
+{% block gatherer_config %}{% endblock %}
+{% block admin_tools %}{% endblock %}
+
+{% block navigation %}<div id="navigation"><a href="/">Back to front page</a></div>{% endblock %}
+
+{% endblock content %}

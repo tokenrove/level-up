@@ -1,109 +1,88 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-  <head>
-    <link type="text/css" rel="stylesheet" href="/stylesheets/main.css" />
-    <title>Level Up!</title>
-  </head>
-  <body>
-    <!-- profile -->
-    <p><img src="{% if archetype %}{{ archetype.sprite|urlencode }}{% else %}/images/onion.png{% endif %}" /><b>{{ me.heroic_alias|escape }}</b>
-      <a href="/me/edit">Edit</a> <a href="/feed.xml?key={{ me.key|urlencode }}">Atom feed</a></p>
-    {% if xp_percentage %}
-    <img src="http://chart.apis.google.com/chart?chf=bg,s,0000ff00&cht=p&chd=t:{{ xp_percentage|join:"," }}&chs=250x100&chl={{ job_names|join:"|" }}" />
-    {% endif %}
+{% extends "base_profile.html" %}
 
-    <!-- jobs -->
-    <hr />
-    {% if jobs %}
-    <table>
-      {% for job in jobs %}
-      <tr class="job">
-	<td style="background-color: #abb">
-	  <a href="/me/job?key={{ job.key|urlencode }}">Level {{ job.level|escape }}
-	    {{ job.archetype.name|escape|capfirst }}</a>
-	</td>
-	<td>
-	  <div class="xp-bar">
-	    <div class="xp-bar-inner" style="width: {% widthratio job.xp job.xp_to_next_level 100 %}%;"></div>
-	    <div class="xp-bar-current">{{ job.xp }}</div>
-	    <div class="xp-bar-to-next">/ {{ job.xp_to_next_level }}</div>
-	  </div>
-	</td>
-      </tr>
+{% block profile_tools %}
+<div id="profile-tools"><a href="/me/edit">Edit</a> <a href="/feed.xml?key={{ me.key|urlencode }}">Atom feed</a></div>
+{% endblock profile_tools %}
+
+{% block job_url %}
+<a href="/me/job?key={{ job.key|urlencode }}">Level {{ job.level|escape }} {{ job.archetype.name|escape|capfirst }}</a>
+{% endblock %}
+
+{% block job_tools %}
+{% if available_archetypes %}
+<p><form action="/me/job/new" method="post">
+    <select name="archetype">
+      {% for archetype in available_archetypes %}
+      <option>{{ archetype.name|escape }}</option>
       {% endfor %}
-    </table>
-    {% endif %}
-    {% if available_archetypes %}
-    <p><form action="/me/job/new" method="post">
-	<select name="archetype">
-	  {% for archetype in available_archetypes %}
-	  <option>{{ archetype.name|escape }}</option>
-	  {% endfor %}
-	</select>
-	<input type=submit value="New job" /></form></p>
-    {% endif %}
+    </select>
+    <input type=submit value="New job" /></form></p>
+{% endif %}
+{% endblock job_tools %}
+
+{% block metrics %}
+<hr />
+<!-- unconnected metrics -->
+{% if unconnected_metrics %}
+<p>Unconnected metrics:</p>
+<table>
+  {% for metric in unconnected_metrics %}
+  <tr class="{% cycle odd-row,even-row %}">
+    <td><a href="/me/metric/connect?key={{ metric.key|urlencode }}">{{ metric.name|escape }}</a></td>
+  </tr>
+  {% endfor %}
+</table>
+{% endif %}
+<p><a href="/me/metric">All Metrics</a> <a href="/me/metric/add">Add Metric</a></p>
+{% endblock metrics %}
+
+{% block companion_tools %}
+<!-- companions / clans -->
+<p><a href="/me/companion/add">Add a companion.</a></p>
+{% endblock companion_tools %}
 
 
-    <hr />
-    <!-- unconnected metrics -->
-    {% if unconnected_metrics %}
-    <p>Unconnected metrics:</p>
+{% block gatherer_config %}
+<!-- gatherer config -->
+<div class="round" style="width: 30%">
+  <div class="gatherer-code"><i>Gatherer code: </i><tt>{{ me.gatherer_code|escape }}</tt></div>
+
+  <p>Give this code to your gatherers to associate them with your
+    character.  Treat the code like a password, since it allows
+    anyone knowing it to submit new metrics for you.</p>
+  <p><a href="/me/invalidate">Invalidate code</a></p>
+</div>
+{% endblock gatherer_config %}
+
+{% block admin_tools %}
+<!-- admin tools -->
+{% if adminp %}
+<hr />
+<p><b>Warning:</b> You are logged in as an administrator.  Changes
+  made here will have an effect on the global application experience.</p>
+<p><form action="/admin/post-news" method="post">
     <table>
-    {% for metric in unconnected_metrics %}
-    <tr class="{% cycle odd-row,even-row %}">
-      <td><a href="/me/metric/connect?key={{ metric.key|urlencode }}">{{ metric.name|escape }}</a></td>
-    </tr>
-    {% endfor %}
+      <tr><td>Title:</td> <td><input type=text name=title /></td></tr>
+      <tr><td /><td><textarea name=body rows=4 cols=70></textarea></td></tr>
+      <tr><td /><td><input type=submit value="Post News" /></td></tr>
     </table>
-    {% endif %}
-    <p><a href="/me/metric">All Metrics</a> <a href="/me/metric/add">Add Metric</a></p>
+</form></p>
 
-    <hr />
-    <!-- companions / clans -->
-    <p><a href="/me/companion/add">Add a companion.</a></p>
+<p><form action="/admin/new-class" method="post">
+    <input type=text name=name />
+    <input type=submit value="Register new class" />
+</form></p>
 
+{% if admin_migration_fns %}
+<p><form action="/admin/migrate" method="post">
+    <select name=fn>
+      {% for fn in admin_migration_fns %}
+      <option>{{ fn }}</option>
+      {% endfor %}
+    </select>
+    <input type=submit value="Perform migration" />
+</form></p>
+{% endif %}
 
-    <hr />
-    <!-- gatherer config -->
-    <div class="round" style="width: 30%">
-      <div class="gatherer-code"><i>Gatherer code: </i><tt>{{ me.gatherer_code|escape }}</tt></div>
-
-      <p>Give this code to your gatherers to associate them with your
-	character.  Treat the code like a password, since it allows
-	anyone knowing it to submit new metrics for you.</p>
-      <p><a href="/me/invalidate">Invalidate code</a></p>
-    </div>
-
-    <!-- admin tools -->
-    {% if adminp %}
-    <hr />
-    <p><b>Warning:</b> You are logged in as an administrator.  Changes
-      made here will have an effect on the global application experience.</p>
-    <p><form action="/admin/post-news" method="post">
-	<table>
-	  <tr><td>Title:</td> <td><input type=text name=title /></td></tr>
-	  <tr><td /><td><textarea name=body rows=4 cols=70></textarea></td></tr>
-	  <tr><td /><td><input type=submit value="Post News" /></td></tr>
-	</table>
-    </form></p>
-
-    <p><form action="/admin/new-class" method="post">
-	<input type=text name=name />
-	<input type=submit value="Register new class" />
-    </form></p>
-
-    {% if admin_migration_fns %}
-    <p><form action="/admin/migrate" method="post">
-	<select name=fn>
-	  {% for fn in admin_migration_fns %}
-	  <option>{{ fn }}</option>
-	  {% endfor %}
-	</select>
-	<input type=submit value="Perform migration" />
-    </form></p>
-    {% endif %}
-
-    {% endif %}
-  </body>
-</html>
+{% endif %}
+{% endblock admin_tools %}

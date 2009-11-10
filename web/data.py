@@ -12,9 +12,15 @@ class OwnedModel(db.Model):
         return cls.all().filter('owner =', user)
 
 
-def calculate_xp_percentage(jobs):
-    xp_total = sum(map(lambda x: x.xp, jobs))
-    return xp_total != 0 and map(lambda x: int(100.0*x.xp/xp_total), jobs) or []
+# XXX rework to calculate xp of metrics contributing to a level up
+def calculate_xp_percentage(metrics):
+    subtotals = map(lambda m: sum([x.value for x in MetricTxn.all().filter('metric = ', m)]), metrics)
+    total = sum(subtotals)
+    return total != 0 and map(lambda x: int(100.0*x/total), subtotals) or []
+
+def calculate_level_percentage(jobs):
+    total = sum(map(lambda x: x.level, jobs))
+    return total != 0 and map(lambda x: int(100.0*x.level/total), jobs) or []
 
 # per http://code.activestate.com/recipes/576563/
 def cached_property(f):
@@ -115,6 +121,16 @@ class VisualProperties(db.Model):
     eye_color = db.StringProperty()
     favorite_color = db.StringProperty()
 
+class CharacterAttributes(db.Model):
+    might = db.IntegerProperty(default=1)
+    dexterity = db.IntegerProperty(default=1)
+    constitution = db.IntegerProperty(default=1)
+    intellect = db.IntegerProperty(default=1)
+    wisdom = db.IntegerProperty(default=1)
+    charisma = db.IntegerProperty(default=1)
+    perception = db.IntegerProperty(default=1)
+    patience = db.IntegerProperty(default=1)
+
 class Character(OwnedModel):
     # decoration
     heroic_alias = db.StringProperty()
@@ -124,6 +140,8 @@ class Character(OwnedModel):
     created = db.DateProperty(auto_now_add=True)
     # metrics
     gatherer_code = db.StringProperty(required=True)
+    # stats
+    attributes = CharacterAttributes()
 
     def register_metric(self, name, unit, ratio='1:1', type='client'):
         metric = Metric.all().filter('owner =', self.owner).filter('name =', name).get();

@@ -1,11 +1,6 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-  <head>
-    <link type="text/css" rel="stylesheet" href="/stylesheets/main.css" />
-    <title>Level Up!</title>
-  </head>
-  <body>
+{% extends "base.html" %}
+
+{% block content %}
     <img src="{% if archetype %}{{ archetype.sprite|urlencode }}{% else %}/images/onion.png{% endif %}" />
     <h1>Level {{ job.level|escape }} {{ job.archetype.name|escape|capfirst }}</h1>
     <div class="xp-bar">
@@ -14,6 +9,12 @@
       <div class="xp-bar-to-next">/ {{ job.xp_to_next_level }}</div>
     </div>
 
+    {% if xp_percentage %}
+    <img src="http://chart.apis.google.com/chart?chf=bg,s,0000ff00&cht=p&chd=t:{{ xp_percentage|join:"," }}&chs=250x100&chl={{ metric_names|join:"|" }}" />
+    {% endif %}
+
+
+    {% if metrics %}
     <p>Metrics:
       <table>
 	<tr class="legend-row"><th>Name</th><th>Units</th><th>Conversion</th><th>Ops</th></tr>
@@ -37,7 +38,7 @@
       {% endfor %}
       </table>
     </p>
+    {% endif %}
 
     <p><a href="/me/metric">All Metrics</a> <a href="/me/metric/add?default_job={{ job.key|urlencode }}">Add Metric</a></p>
-  </body>
-</html>
+{% endblock %}

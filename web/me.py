@@ -27,7 +27,7 @@ class ProfileHandler(util.RequestHandler):
                                     'jobs': jobs,
                                     'archetype': jobs and jobs[0].archetype._static,
                                     'job_names': map(lambda x: x.archetype.name, jobs),
-                                    'xp_percentage': data.calculate_xp_percentage(jobs),
+                                    'level_percentage': data.calculate_level_percentage(jobs),
                                     'available_archetypes': available_archetypes,
                                     'unconnected_metrics': unconnected_metrics,
                                     'admin_migration_fns': data.migration_fns,
@@ -43,7 +43,7 @@ class ViewHandler(util.RequestHandler):
                                     'jobs': jobs,
                                     'archetype': jobs and jobs[0].archetype._static,
                                     'job_names': map(lambda x: x.archetype.name, jobs),
-                                    'xp_percentage': data.calculate_xp_percentage(jobs)
+                                    'level_percentage': data.calculate_level_percentage(jobs)
                                     })
 
 class NewJobHandler(util.RequestHandler):
@@ -64,9 +64,13 @@ class JobViewHandler(util.RequestHandler):
         user = users.get_current_user()
         job = data.Job.get(self.request.get('key'))
         assert(job.owner == user)
+        metrics = data.Metric.by_user(user).filter('connected_to =', job).fetch(max_results)
+        xp_percentage = data.calculate_xp_percentage(metrics)
         self.handle_with_template('job.html', { 'job': job,
                                                 'archetype': job.archetype._static,
-                                                'metrics': data.Metric.by_user(user).filter('connected_to =', job).fetch(max_results) })
+                                                'xp_percentage': xp_percentage,
+                                                'metric_names': map(lambda x: x.name, metrics),
+                                                'metrics': metrics })
 
 
 

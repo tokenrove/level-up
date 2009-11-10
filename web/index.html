@@ -1,11 +1,7 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-  <head>
-    <link type="text/css" rel="stylesheet" href="/stylesheets/main.css" />
-    <title>Level Up!</title>
-  </head>
-  <body>
+{% extends "base.html" %}
+
+{% block content %}
+{% block login %}
     <div style="width: 30%; float: right;">
       <div style="height: 8em;">
 	{% if user %}
@@ -14,7 +10,9 @@
 	{% endif %}
 	<p><a href="{{ login_url }}">{% if user %}Sign out{% else %}Log in{% endif %}</a></p>
       </div>
+{% endblock login %}
 
+{% block caveats %}
       <div class="round">
 	<p><center><h3>Caveats</h3></center>
 	  <ul>
@@ -25,7 +23,9 @@
 	</p>
       </div>
     </div>
+{% endblock caveats %}
 
+{% block site_news %}
     {% if news %}
     <p><h2>What's new</h2>
       <dl>
@@ -36,7 +36,9 @@
       </dl>
     </p>
     {% endif %}
+{% endblock site_news %}
 
+{% block hall_of_heroes %}
     {% if hall_of_heroes %}
     <hr />
     <p><h2>Hall of Heroes</h2>
@@ -63,6 +65,5 @@
 	{% endfor %}
     </table></p>
     {% endif %}
-
-  </body>
-</html>
+{% endblock hall_of_heroes %}
+{% endblock content %}
