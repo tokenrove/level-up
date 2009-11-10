@@ -145,10 +145,13 @@ def fresh_gatherer_code():
 
 # XXX this is what a lack of usable lambdas has done to us, you fools!
 def character_created(out):
+    out.write("<pre>\n")
     for char in Character.all():
-        if char.created == None:
+        #out.write("%s (%s) created %s\n" % (char.key(), char.heroic_alias, char.created))
+        if not char.created:
             char.created = datetime.datetime.now()
             char.put()
-            out.write("Updated %s (%s)\n" % char.key, char.heroic_alias)
+            out.write("Updated %s (%s)\n" % (char.key(), char.heroic_alias))
+    out.write("\n</pre>\n")
 
 migration_fns = { 'character_created': character_created }
