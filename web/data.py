@@ -11,8 +11,42 @@ class OwnedModel(db.Model):
         return cls.all().filter('owner =', user)
 
 
+def calculate_xp_percentage(jobs):
+    xp_total = sum(map(lambda x: x.xp, jobs))
+    return xp_total != 0 and map(lambda x: int(100.0*x.xp/xp_total), jobs) or []
+
+# per http://code.activestate.com/recipes/576563/
+def cached_property(f):
+    """returns a cached property that is calculated by function f"""
+    def get(self):
+        try:
+            return self._property_cache[f]
+        except AttributeError:
+            self._property_cache = {}
+            x = self._property_cache[f] = f(self)
+            return x
+        except KeyError:
+            x = self._property_cache[f] = f(self)
+            return x
+        
+    return property(get)
+
+
 class Archetype(db.Model):
     name = db.StringProperty(required=True)
+
+    @cached_property
+    def _static(self):
+        #path = os.path.join(os.path.dirname(__file__), 'static/class/%s.json' % self.name)
+        return {
+            'programmer': {
+                'sprite': '/images/fighter.gif'
+                },
+            'musician': {
+                'sprite': '/images/mage.gif'
+                }
+            }.get(self.name, lambda: {})
+
 
 class Job(OwnedModel):
     archetype = db.ReferenceProperty(Archetype, required=True)

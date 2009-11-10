@@ -10,25 +10,21 @@ handlers:
 - url: /images
   static_dir: images
 
-- url: /me/metrics
+- url: /me/metric.*
   login: required
   script: metric.py
-
-- url: /me/metrics/.*
-  login: required
-  script: metric.py
-
-- url: /me
-  login: required
-  script: me.py
-
-- url: /me/.*
-  login: required
-  script: me.py
 
 - url: /metric
   secure: always
   script: metric.py
+
+- url: /me.*
+  login: required
+  script: me.py
+
+- url: /view
+  login: required
+  script: me.py
 
 - url: /.*
   script: main.py

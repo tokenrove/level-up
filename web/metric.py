@@ -104,13 +104,13 @@ class RollbackHandler(util.RequestHandler):
         self.response.out.write('Not here yet, but eventually this will let you undo and repeat transactions.')
 
 def main():
-    application = webapp.WSGIApplication([('/me/metrics', ViewHandler),
-                                          ('/me/metrics/connect', ConnectHandler),
-                                          ('/me/metrics/txns', TxnsHandler),
-                                          ('/me/metrics/delete', DeleteHandler),
-                                          ('/me/metrics/add', AddHandler),
-                                          ('/me/metrics/rollback', RollbackHandler),
-                                          ('/me/metrics/manual', ManualHandler),
+    application = webapp.WSGIApplication([('/me/metric', ViewHandler),
+                                          ('/me/metric/connect', ConnectHandler),
+                                          ('/me/metric/txns', TxnsHandler),
+                                          ('/me/metric/delete', DeleteHandler),
+                                          ('/me/metric/add', AddHandler),
+                                          ('/me/metric/rollback', RollbackHandler),
+                                          ('/me/metric/manual', ManualHandler),
                                           ('/metric', GathererHandler)],
                                          debug=True)
     run_wsgi_app(application)

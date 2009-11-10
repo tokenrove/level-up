@@ -7,10 +7,10 @@
   </head>
   <body>
     <!-- profile -->
-    <p><img src="/images/mage.gif" /><b>{{ me.heroic_alias|escape }}</b></p>
-    <a href="/me/edit">Edit</a>
-    {% if job_names %}
-    <img src="http://chart.apis.google.com/chart?cht=p&chd=t:{{ xp_percentage|join:"," }}&chs=250x100&chl={{ job_names|join:"|" }}" />
+    <p><img src="{% if archetype %}{{ archetype.sprite|urlencode }}{% else %}/images/mage.gif{% endif %}" /><b>{{ me.heroic_alias|escape }}</b>
+      <a href="/me/edit">Edit</a></p>
+    {% if xp_percentage %}
+    <img src="http://chart.apis.google.com/chart?chf=bg,s,0000ff00&cht=p&chd=t:{{ xp_percentage|join:"," }}&chs=250x100&chl={{ job_names|join:"|" }}" />
     {% endif %}
 
     <!-- jobs -->
@@ -53,12 +53,16 @@
     <table>
     {% for metric in unconnected_metrics %}
     <tr class="{% cycle odd-row,even-row %}">
-      <td><a href="/me/metrics/connect?key={{ metric.key|urlencode }}">{{ metric.name|escape }}</a></td>
+      <td><a href="/me/metric/connect?key={{ metric.key|urlencode }}">{{ metric.name|escape }}</a></td>
     </tr>
     {% endfor %}
     </table>
     {% endif %}
-    <p><a href="/me/metrics">All Metrics</a> <a href="/me/metrics/add">Add Metric</a></p>
+    <p><a href="/me/metric">All Metrics</a> <a href="/me/metric/add">Add Metric</a></p>
+
+    <hr />
+    <!-- companions / clans -->
+    <p><a href="/me/companion/add">Add a companion.</a></p>
 
 
     <hr />

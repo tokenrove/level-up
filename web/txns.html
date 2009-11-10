@@ -16,7 +16,7 @@
 	<td>{{ txn.unit|escape }}</td>
 	<td>{{ txn.job.archetype.name|escape }}</td>
 	<td>
-	  <a href="/me/metrics/rollback?key={{ txn.key|urlencode }}">rollback</a>
+	  <a href="/me/metric/rollback?key={{ txn.key|urlencode }}">rollback</a>
 	</td>
       </tr>
       {% endfor %}

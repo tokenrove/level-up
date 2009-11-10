@@ -22,16 +22,28 @@ class ProfileHandler(util.RequestHandler):
         available_archetypes = filter(lambda x: x.name not in map(lambda y: y.archetype.name, jobs),
                                       data.Archetype.all().fetch(max_results))
         unconnected_metrics = data.Metric.by_user(user).filter('connected_to =',None).fetch(max_results)
-        xp_total = sum(map(lambda x: x.xp, jobs))
-        xp_percentage = map(lambda x: int(100.0*x.xp/xp_total), jobs)
         self.handle_with_template('profile.html',
                                   { 'me': character,
                                     'jobs': jobs,
+                                    'archetype': jobs and jobs[0].archetype._static,
                                     'job_names': map(lambda x: x.archetype.name, jobs),
-                                    'xp_percentage': xp_percentage,
+                                    'xp_percentage': data.calculate_xp_percentage(jobs),
                                     'adminp': users.is_current_user_admin(),
                                     'available_archetypes': available_archetypes,
                                     'unconnected_metrics': unconnected_metrics })
+
+class ViewHandler(util.RequestHandler):
+    def get(self):
+        character = data.Character.get(self.request.get('key'))
+        jobs = data.Job.by_user(character.owner).fetch(max_results)
+        self.handle_with_template('view.html',
+                                  { 'viewer': users.get_current_user(),
+                                    'me': character,
+                                    'jobs': jobs,
+                                    'archetype': jobs and jobs[0].archetype._static,
+                                    'job_names': map(lambda x: x.archetype.name, jobs),
+                                    'xp_percentage': data.calculate_xp_percentage(jobs)
+                                    })
 
 class NewJobHandler(util.RequestHandler):
     def post(self):
@@ -52,6 +64,7 @@ class JobViewHandler(util.RequestHandler):
         job = data.Job.get(self.request.get('key'))
         assert(job.owner == user)
         self.handle_with_template('job.html', { 'job': job,
+                                                'archetype': job.archetype._static,
                                                 'metrics': data.Metric.by_user(user).filter('connected_to =', job).fetch(max_results) })
 
 
@@ -98,6 +111,7 @@ class InvalidateHandler(util.RequestHandler):
 
 def main():
     application = webapp.WSGIApplication([('/me', ProfileHandler),
+                                          ('/view', ViewHandler),
                                           ('/me/edit', EditHandler),
                                           ('/me/invalidate', InvalidateHandler),
                                           ('/me/job/new', NewJobHandler),
