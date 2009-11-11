@@ -19,7 +19,7 @@
     </p>
 
     {% if txn_values %}
-    <img src="http://chart.apis.google.com/chart?chf=bg,s,0000ff00&cht=lc&chd=t:{{ txn_values|join:"," }}&chs=400x150&chxt=x,y&chxl=0:||time||1:||value|" />
+    <img src="http://chart.apis.google.com/chart?chf=bg,s,0000ff00&cht=lxy&chd=t:{{ txn_times|join:"," }}|{{ txn_values|join:"," }}&chs=400x150&chxt=x,y&chxl=0:||time||1:||value|" />
     {% endif %}
 
 {% block navigation %}<div id="tools"><span>&#187;<a href="/me">Back to profile</a></span></div>{% endblock %}

@@ -63,11 +63,16 @@ class TxnsHandler(util.RequestHandler):
         key = self.request.get('key')
         metric = data.Metric.get(key)
         txns = data.MetricTxn.by_user(user).filter('metric =',metric).order('-created').fetch(max_results)
-        txn_values = map(lambda x: x.value, txns)
-        u,v = hasattr(txn_values,'__getitem__') and (min(txn_values), max(txn_values)) or (0,0)
+        txn_values = map(lambda x: (x.value,(x.created-txns[-1].created).seconds), txns)
+        txn_values.reverse()
+        if len(txn_values) > 0:
+            u,v = (min([x[0] for x in txn_values]),max([x[0] for x in txn_values])) or (0,0)
+            m,n = (txn_values[0][1],txn_values[-1][1])
+        else: u,v,m,n = 0,0,0,0
         self.handle_with_template('txns.html',
                                   { 'metric': metric,
-                                    'txn_values': (v > u) and map(lambda x: 100.0*(float(x)/(v-u)), txn_values),
+                                    'txn_values': (v > u) and map(lambda x: 100.0*(float(x[0]-u)/(v-u)), txn_values),
+                                    'txn_times': (n > m) and map(lambda x: 100.0*(float(x[1]-m)/(n-m)), txn_values) or [],
                                     'txns': txns })
 
 
