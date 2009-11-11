@@ -3,29 +3,33 @@
 {% block content %}
 <p>Connect {{ metric.name|escape }} to which job?</p>
 
-    <table>
-    {% for job in jobs %}
-    <tr class="{% cycle odd-row,even-row %}">
-      <td>Level {{ job.level|escape }}</td>
-      <td>{{ job.archetype.name|escape|capfirst }}</td>
-      <td><form action="/me/metric/connect" method="post">
-	  <input type=hidden name=back value="/me" />
-	  <input type=hidden name=key value="{{ metric.key|urlencode }}" />
-	  <input type=hidden name=job value="{{ job.key|urlencode }}" />
-	  <input type=submit value="connect" />
-      </form></td>
-    </tr>
-    {% endfor %}
-    <tr>{% if metric.connected_to %}
+    <table id="connect">
+    <tr class="odd-row">{% if metric.connected_to %}
+      <td /> <td /> <td>
       <form action="/me/metric/connect" method="post">
 	  <input type=hidden name=back value="/me" />
 	  <input type=hidden name=key value="{{ metric.key|urlencode }}" />
 	  <input type=submit value="Disconnect" />
       </form>
       {% else %}
-      <a href="/me">Leave disconnected</a>
+      &#187;<a href="/me">Leave disconnected</a>
       {% endif %}
+      </td>
     </tr>
+    {% for job in jobs %}
+    <tr class="{% cycle even-row,odd-row %}">
+      <td>Level {{ job.level|escape }}</td>
+      <td>{{ job.archetype.name|escape|capfirst }}</td>
+      <td><form action="/me/metric/connect" method="post">
+	  <input type=hidden name=back value="/me" />
+	  <input type=hidden name=key value="{{ metric.key|urlencode }}" />
+	  <input type=hidden name=job value="{{ job.key|urlencode }}" />
+	  <input type=submit value="connect" style="margin-top: 10px;" />
+      </form></td>
+    </tr>
+    {% endfor %}
     </table>
+
+{% block navigation %}<div id="tools"><span>&#187;<a href="/me">Back to profile</a></span></div>{% endblock %}
 
 {% endblock %}

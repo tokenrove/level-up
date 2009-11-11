@@ -40,5 +40,5 @@
     </p>
     {% endif %}
 
-    <p><a href="/me/metric">All Metrics</a> <a href="/me/metric/add?default_job={{ job.key|urlencode }}">Add Metric</a></p>
+    <div id="tools"><span>&#187;<a href="/me/metric">All Metrics</a></span> <span>&#187;<a href="/me/metric/add?default_job={{ job.archetype.name|urlencode }}">Add Metric</a></span></div>
 {% endblock %}

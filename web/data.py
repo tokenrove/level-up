@@ -47,12 +47,24 @@ class Archetype(db.Model):
         # XXX eventually, load from /static
         #path = os.path.join(os.path.dirname(__file__), 'static/class/%s.json' % self.name)
         return {
-            'programmer': { 'sprite': '/images/bmage.png' },
-            'musician': { 'sprite': '/images/thief.png' },
-            'writer': {'sprite': '/images/rmage.png'},
-            'artist': {'sprite': '/images/wmage.png'},
-            'trainer' : {'sprite': '/images/ninja.png'},
-            'scholar' : {'sprite': '/images/sage.png'}
+            'programmer': {
+                'sprite': '/images/bmage.png',
+                'stats': {'constitution':-1, 'charisma':-1, 'intellect':1, 'perception':1, 'patience':1 } },
+            'musician': {
+                'sprite': '/images/thief.png',
+                'stats': {'dexterity':1, 'charisma':1, 'wisdom':-1} },
+            'writer': {
+                'sprite': '/images/rmage.png',
+                'stats': {'intellect':1, 'wisdom':1, 'charisma':1, 'might':-1, 'constitution':-1} },
+            'artist': {
+                'sprite': '/images/wmage.png',
+                'stats': {'perception':1, 'charisma':1} },
+            'trainer' : {
+                'sprite': '/images/ninja.png',
+                'stats': {'might':1, 'constitution':1, 'charisma':1, 'intellect':-1, 'wisdom':-1, 'perception':-1} },
+            'scholar' : {
+                'sprite': '/images/sage.png',
+                'stats': {'intellect':1, 'wisdom':1, 'charisma':-1, 'perception':-1 } }
             }.get(self.name, lambda: {})
 
 
@@ -172,4 +184,15 @@ def character_created(out):
             out.write("Updated %s (%s)\n" % (char.key(), char.heroic_alias))
     out.write("\n</pre>\n")
 
-migration_fns = { 'character_created': character_created }
+def character_attributes(out):
+    out.write("<pre>\n")
+    for char in Character.all():
+        #out.write("%s (%s) created %s\n" % (char.key(), char.heroic_alias, char.created))
+        if not char.attributes:
+            char.attributes = CharacterAttributes().put()
+            char.put()
+            out.write("Updated %s (%s)\n" % (char.key(), char.heroic_alias))
+    out.write("\n</pre>\n")
+
+migration_fns = { 'character_created': character_created,
+                  'character_attributes': character_attributes }

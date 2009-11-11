@@ -2,14 +2,28 @@
 
 {% block content %}
 {% block profile %}
-<p><img src="{% if archetype %}{{ archetype.sprite|urlencode }}{% else %}/images/onion.png{% endif %}" /><b>{{ me.heroic_alias|escape }}</b></p>
+<p><img src="{% if archetype %}{{ archetype.sprite|urlencode }}{% else %}/images/onion.png{% endif %}"
+        style="width: 2.5em; height: 3.5em;" />
+  <font size=13>{{ me.heroic_alias|escape }}</font></p>
+{% block attributes %}
+<div>
+  <table id="stats">
+    <style>
+      table#stats th { background-color: #aaa; }
+      table#stats td { background-color: #ccc; }
+    </style>
+    <tr><th>Might</th><td>{{ me.attributes.might }}</td>
+      <th>Intellect</th><td>{{ me.attributes.intellect }}</td></tr>
+    <tr><th>Dexterity</th><td>{{ me.attributes.dexterity }}</td>
+      <th>Wisdom</th><td>{{ me.attributes.wisdom }}</td></tr>
+    <tr><th>Constitution</th><td>{{ me.attributes.constitution }}</td>
+      <th>Perception</th><td>{{ me.attributes.perception }}</td></tr>
+    <tr><th>Charisma</th><td>{{ me.attributes.charisma }}</td>
+      <th>Patience</th><td>{{ me.attributes.patience }}</td></tr>
+  </table>
+</div>
+{% endblock attributes %}
 {% endblock profile %}
-
-{% block levels_chart %}
-{% if level_percentage %}
-<img src="http://chart.apis.google.com/chart?chf=bg,s,0000ff00&cht=p&chd=t:{{ level_percentage|join:"," }}&chs=250x100&chl={{ job_names|join:"|" }}" />
-{% endif %}
-{% endblock levels_chart %}
 
 {% block profile_tools %}{% endblock profile_tools %}
 
@@ -34,6 +48,12 @@
 </table>
 {% endif %}
 {% endblock jobs %}
+{% block levels_chart %}
+{% if level_percentage %}
+<img src="http://chart.apis.google.com/chart?chf=bg,s,0000ff00&cht=p&chd=t:{{ level_percentage|join:"," }}&chs=250x100&chl={{ job_names|join:"|" }}" />
+{% endif %}
+{% endblock levels_chart %}
+
 {% block job_tools %}{% endblock job_tools %}
 
 {% block metrics %}{% endblock %}
@@ -44,6 +64,6 @@
 {% block gatherer_config %}{% endblock %}
 {% block admin_tools %}{% endblock %}
 
-{% block navigation %}<div id="navigation"><a href="/">Back to front page</a></div>{% endblock %}
+{% block navigation %}<div id="navigation"><span>&#187;<a href="/">Back to front page</a></span></div>{% endblock %}
 
 {% endblock content %}

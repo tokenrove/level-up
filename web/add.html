@@ -47,7 +47,7 @@
 	  <td><select name=job>
 	      <option value="">None</option>
 	      {% for job in jobs %}
-	      <option value="{{ job.key }}"{% ifequal job.key default_job %} selected{% endifequal %}>
+	      <option value="{{ job.key }}"{% ifequal default_job job.archetype.name %} selected{% endifequal %}>
 		{{ job.archetype.name|escape }}
 	      </option>
 	      {% endfor %}

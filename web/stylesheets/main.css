@@ -68,3 +68,12 @@ div.xp-bar-to-next {
     padding-right:4px;
     font-weight: bold;
 }
+
+div#tools {
+    padding-top: 0.5em;
+    padding-left: 0em;
+}
+
+div#tools span {
+    padding: 1em;
+}

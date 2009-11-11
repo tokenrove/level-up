@@ -1,7 +1,7 @@
 {% extends "base_profile.html" %}
 
 {% block profile_tools %}
-<div id="profile-tools"><a href="/me/edit">Edit</a> <a href="/feed.xml?key={{ me.key|urlencode }}">Atom feed</a></div>
+<div id="tools"><span>&#187;<a href="/me/edit">Edit</a></span> <span>&#187;<a href="/feed.xml?key={{ me.key|urlencode }}">Atom feed</a></span></div>
 {% endblock profile_tools %}
 
 {% block job_url %}
@@ -33,24 +33,25 @@
   {% endfor %}
 </table>
 {% endif %}
-<p><a href="/me/metric">All Metrics</a> <a href="/me/metric/add">Add Metric</a></p>
+<div id="tools"><span>&#187;<a href="/me/metric">All Metrics</a></span> <span>&#187;<a href="/me/metric/add">Add Metric</a></span></div>
 {% endblock metrics %}
 
 {% block companion_tools %}
 <!-- companions / clans -->
-<p><a href="/me/companion/add">Add a companion.</a></p>
+<!-- <p><a href="/me/companion/add">Add a companion.</a></p> -->
 {% endblock companion_tools %}
 
 
 {% block gatherer_config %}
 <!-- gatherer config -->
+<hr />
 <div class="round" style="width: 30%">
   <div class="gatherer-code"><i>Gatherer code: </i><tt>{{ me.gatherer_code|escape }}</tt></div>
 
   <p>Give this code to your gatherers to associate them with your
     character.  Treat the code like a password, since it allows
     anyone knowing it to submit new metrics for you.</p>
-  <p><a href="/me/invalidate">Invalidate code</a></p>
+  <span>&#187;<a href="/me/invalidate">Invalidate code</a></span>
 </div>
 {% endblock gatherer_config %}
 

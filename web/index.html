@@ -6,21 +6,21 @@
       <div style="height: 8em;">
 	{% if user %}
 	<p>Hello, {{ user.nickname|escape }} {% if adminp %}(<b>administrator</b>){% endif %}</p>
-	<p><a href="/me"><img src="{% if archetype %}{{ archetype.sprite|urlencode }}{% else %}/images/onion.png{% endif %}" />My profile.</a></p>
+	<span>&#187;<a href="/me">My profile</a> -- <img src="{% if archetype %}{{ archetype.sprite|urlencode }}{% else %}/images/onion.png{% endif %}" /></span>
 	{% endif %}
-	<p><a href="{{ login_url }}">{% if user %}Sign out{% else %}Log in{% endif %}</a></p>
+
+	<br /><span>&#187;<a href="{{ login_url }}">{% if user %}Sign out{% else %}Log in{% endif %}</a></span>
       </div>
 {% endblock login %}
 
 {% block caveats %}
       <div class="round">
-	<p><center><h3>Caveats</h3></center>
-	  <ul>
-	    <li>This software is not complete.</li>
-	    <li>This software is not secure.</li>
-	    <li>Use at your own risk.</li>
-	  </ul>
-	</p>
+	<h3 style="text-align: center;">Caveats</h3>
+	<ul>
+	  <li>This software is not complete.</li>
+	  <li>This software is not secure.</li>
+	  <li>Use at your own risk.</li>
+	</ul>
       </div>
     </div>
 {% endblock caveats %}

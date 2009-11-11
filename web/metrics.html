@@ -1,4 +1,4 @@
-{% extend "base.html" %}
+{% extends "base.html" %}
 
 {% block content %}
     <p>Got {{ metrics|length }} of {{ count|escape }} metrics.</p>
@@ -20,4 +20,7 @@
       {% endfor %}
       </table>
     </p>
+
+{% block navigation %}<div id="tools"><span>&#187;<a href="/me">Back to profile</a></span></div>{% endblock %}
+
 {% endblock %}

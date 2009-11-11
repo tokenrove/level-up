@@ -59,11 +59,16 @@ class DeleteHandler(util.RequestHandler):
 
 class TxnsHandler(util.RequestHandler):
     def get(self):
+        user = users.get_current_user()
         key = self.request.get('key')
         metric = data.Metric.get(key)
+        txns = data.MetricTxn.by_user(user).filter('metric =',metric).order('-created').fetch(max_results)
+        txn_values = map(lambda x: x.value, txns)
+        u,v = hasattr(txn_values,'__getitem__') and (min(txn_values), max(txn_values)) or (0,0)
         self.handle_with_template('txns.html',
                                   { 'metric': metric,
-                                    'txns': data.MetricTxn.by_user(users.get_current_user()).filter('metric =',metric).order('-created').fetch(max_results) })
+                                    'txn_values': (v > u) and map(lambda x: 100.0*(x/(v-u)), txn_values),
+                                    'txns': txns })
 
 
 class ViewHandler(util.RequestHandler):
