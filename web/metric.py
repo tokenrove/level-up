@@ -67,7 +67,7 @@ class TxnsHandler(util.RequestHandler):
         u,v = hasattr(txn_values,'__getitem__') and (min(txn_values), max(txn_values)) or (0,0)
         self.handle_with_template('txns.html',
                                   { 'metric': metric,
-                                    'txn_values': (v > u) and map(lambda x: 100.0*(x/(v-u)), txn_values),
+                                    'txn_values': (v > u) and map(lambda x: 100.0*(float(x)/(v-u)), txn_values),
                                     'txns': txns })
 
 
