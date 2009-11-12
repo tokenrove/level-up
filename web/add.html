@@ -26,6 +26,36 @@
     <p>For automatic client-side metrics, stick your gatherer code in
       a file called <tt>~/.level-up-code</tt>.</p>
 
+    <p>Client-side gatherers to download: (more to come)
+      <dl>
+	<dt><a href="/static/gatherers/git-commit-hook-added-lines.sh">git
+	    commit hook</a></dt>
+	<dd>Make this script executable, then symlink it
+	to <tt><i>repo</i>/.git/hooks/post-commit</tt>.  It will
+	submit one XP for each line added per commit.  You can run it
+	manually, from the base repo directory, to verify that it
+	works and to connect the metric before submitting real data.</dd>
+	<dt><a href="/static/gatherers/TracLevelUpGatherer-0.1-py2.5.egg">trac
+	    bug fix hook</a></dt>
+	<dd>Drop this into your <tt>trac/plugins</tt> directory and
+	enable it as with any other trac plugin.  It submits by
+	default fifty XP for each issue closed with a resolution of
+	"fixed".
+	  Example configuration (add to trac.conf):
+	  <pre>
+[level_up]
+authors = julian, matt
+gatherer_codes = /home/julian/.level-up-code, dKmK_14MzwI=
+	</pre>
+
+	  Note that if you specify only one value
+	  for <tt>authors</tt>, the default location to check for a
+	  gatherer code is <tt>~/.level-up-code</tt> for the user
+	  running trac.  You can also customize <tt>unit</tt>, <tt>ratio</tt>, <tt>value</tt>,
+	  <tt>metric_name</tt>, <tt>resolution</tt>, and <tt>submit_url</tt>.</dd>
+      </dl>
+    </p>
+
     <p>Note that all XP values are integers, and as such, the
       conversion ratio given below (also with integer numerator and
       denominator) will silently truncate fractional XP, like all
