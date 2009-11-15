@@ -77,7 +77,7 @@ gatherer_codes = /home/julian/.level-up-code, dKmK_14MzwI=
 	  <td><select name=job>
 	      <option value="">None</option>
 	      {% for job in jobs %}
-	      <option value="{{ job.key }}"{% ifequal default_job job.archetype.name %} selected{% endifequal %}>
+	      <option value="{{ job.key }}"{% ifequal default_job job.archetype.name %} selected="selected"{% endifequal %}>
 		{{ job.archetype.name|escape }}
 	      </option>
 	      {% endfor %}
