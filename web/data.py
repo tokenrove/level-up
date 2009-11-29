@@ -2,6 +2,7 @@ import os
 import base64
 import math
 import datetime
+import random
 from google.appengine.ext import db
 
 class OwnedModel(db.Model):
@@ -58,7 +59,7 @@ class Archetype(db.Model):
                 'stats': {'intellect':1, 'wisdom':1, 'charisma':1, 'might':-1, 'constitution':-1} },
             'artist': {
                 'sprite': '/images/wmage.png',
-                'stats': {'perception':1, 'charisma':1} },
+                'stats': {'dexterity':1, 'wisdom':-1, 'perception':1, 'charisma':1} },
             'trainer' : {
                 'sprite': '/images/ninja.png',
                 'stats': {'might':1, 'constitution':1, 'charisma':1, 'intellect':-1, 'wisdom':-1, 'perception':-1} },
@@ -85,6 +86,8 @@ class Job(OwnedModel):
     def level_up(self):
         self.level += 1
         self.put()
+        char = Character.by_user(self.owner).get()
+        char.gain_stats(self.archetype._static['stats'])
         FeedEvent(owner=self.owner, type='level up', value=str(self.level),
                   xp_to_next_level=self.xp_to_next_level-self.xp, job=self).put()
 
@@ -133,15 +136,7 @@ class VisualProperties(db.Model):
     eye_color = db.StringProperty()
     favorite_color = db.StringProperty()
 
-class CharacterAttributes(db.Model):
-    might = db.IntegerProperty(default=1)
-    dexterity = db.IntegerProperty(default=1)
-    constitution = db.IntegerProperty(default=1)
-    intellect = db.IntegerProperty(default=1)
-    wisdom = db.IntegerProperty(default=1)
-    charisma = db.IntegerProperty(default=1)
-    perception = db.IntegerProperty(default=1)
-    patience = db.IntegerProperty(default=1)
+attributes = ['might', 'dexterity', 'constitution', 'intellect', 'wisdom', 'charisma', 'perception', 'patience']
 
 class Character(OwnedModel):
     # decoration
@@ -153,7 +148,14 @@ class Character(OwnedModel):
     # metrics
     gatherer_code = db.StringProperty(required=True)
     # stats
-    attributes = CharacterAttributes()
+    might = db.IntegerProperty(default=1)
+    dexterity = db.IntegerProperty(default=1)
+    constitution = db.IntegerProperty(default=1)
+    intellect = db.IntegerProperty(default=1)
+    wisdom = db.IntegerProperty(default=1)
+    charisma = db.IntegerProperty(default=1)
+    perception = db.IntegerProperty(default=1)
+    patience = db.IntegerProperty(default=1)
 
     def register_metric(self, name, unit, ratio='1:1', type='client'):
         metric = Metric.all().filter('owner =', self.owner).filter('name =', name).get();
@@ -162,6 +164,13 @@ class Character(OwnedModel):
             metric = Metric(owner=self.owner, name=name, unit=unit, ratio_n=ratio_n, ratio_d=ratio_d, type=type)
             metric.put()
         return metric
+
+    def gain_stats(self, bonuses):
+        for stat in attributes:
+            v = random.random() + (bonuses.get(stat, 0) * 0.2)
+            if v > 0.7: self.__setattr__(stat, 1+getattr(self, stat))
+        self.put()
+        return
 
     @classmethod
     def by_code(cls, code):
@@ -184,15 +193,4 @@ def character_created(out):
             out.write("Updated %s (%s)\n" % (char.key(), char.heroic_alias))
     out.write("\n</pre>\n")
 
-def character_attributes(out):
-    out.write("<pre>\n")
-    for char in Character.all():
-        #out.write("%s (%s) created %s\n" % (char.key(), char.heroic_alias, char.created))
-        if not char.attributes:
-            char.attributes = CharacterAttributes().put()
-            char.put()
-            out.write("Updated %s (%s)\n" % (char.key(), char.heroic_alias))
-    out.write("\n</pre>\n")
-
-migration_fns = { 'character_created': character_created,
-                  'character_attributes': character_attributes }
+migration_fns = { 'character_created': character_created }
