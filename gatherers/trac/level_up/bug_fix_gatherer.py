@@ -37,6 +37,9 @@ class LevelUpBugFixGathererPlugin(Component):
             self.log.debug('%s scores points' % author)
             self.post_metric(self.resolve_gatherer_code(self.gatherer_codes[self.authors.index(author)]))
 
+    def ticket_created(self, ticket): return
+    def ticket_deleted(self, ticket): return
+
     def post_metric(self, code):
         post = urllib.urlencode({'code':code,
                                  'metric':self.metric_name or ('%s trac' % (self.config['project'].get('name'))),
