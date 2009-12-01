@@ -10,7 +10,7 @@ ratio="1:1"
 url="https://level-up.appspot.com/metric"
 
 
-count=`git show -1 HEAD | grep '^\+' | wc -l`
+count=`git show -1 HEAD | grep '^\+[^+]' | wc -l`
 curl -F 'code='"$code" \
      -F 'metric='"$metric" \
      -F 'ratio='"$ratio" \
