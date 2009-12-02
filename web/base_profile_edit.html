@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block content %}
+   {% block intro %}<p>Edit your character here.</p>{% endblock %}
+
+    <div>
+    <form action="{% block action_url %}/me/create{% endblock %}" method="post">
+      <table>
+	<tr><td>Heroic alias:</td><td><input type="text" name="heroic_alias" value="{% block heroic_alias_default %}{{ me.heroic_alias|escape }}{% endblock %}" /></td></tr>
+	<!--
+	    <th>Visual Attributes</th>
+
+	<tr><td>Sex:</td><td><input type="radio" name="sex" value="male" {% ifequal me.sex "male" %}checked{% endifequal %} />Male
+	    <input type="radio" name="sex" value="female" {% ifequal me.sex "female" %}checked{% endifequal %} />Female
+	    <input type="radio" name="sex" value="other" {% ifequal me.sex "other" %}checked{% endifequal %} />Other
+	</td></tr>
+
+	    <div>Height</div>
+	    <div>Weight</div>
+	    <div>Skin color</div>
+	    <div>Hair color (or bald)</div>
+	    <div>Eye color</div>
+	    <div>Favorite color (for clothes)</div> -->
+	<th colspan=2 style="border: 1px solid #000"><b>Privacy settings:</b></th>
+	<tr><td>Visible in the Hall of Heroes?</td>
+	  <td><input type="radio" name="show_in_hall_of_heroes_p" value="true" {% if me.show_in_hall_of_heroes_p %}checked{% endif %} />Yes
+	    <input type="radio" name="show_in_hall_of_heroes_p" value="false" {% if not me.show_in_hall_of_heroes_p %}checked{% endif %} />No
+	</td></tr>
+	<tr><td>Searchable?</td> <td><select name="searchable">
+	      <option value="hide" {% ifequal me.searchable "hide" %}selected="selected"{% endifequal %}>Hidden from searches</option>
+	      <option value="by-email" {% ifequal me.searchable "by-email" %}selected="selected"{% endifequal %}>Let people who search for my email find me</option>
+	      <option value="show" {% ifequal me.searchable "show" %}selected="selected"{% endifequal %}>Show in searches</option>
+	</select></td></tr>
+	<tr><td>Feed access?</td> <td><select name="feed_access">
+	  <option value="public" {% ifequal me.feed_access "public" %}selected="selected"{% endifequal %}>Public</option>
+	  <option value="private" {% ifequal me.feed_access "private" %}selected="selected"{% endifequal %}>Private (clan-only)</option>
+	  <option value="personal" {% ifequal me.feed_access "personal" %}selected="selected"{% endifequal %}>Personal (only me)</option>
+	</select></td></tr>
+      </table>
+      {% block navigation %}
+      <div><span>&#187;<a href="/me">Go Back (do nothing)</a></span> <span><input type="submit" value="Change" /></span></div>
+      {% endblock %}
+    </form>
+{% endblock %}

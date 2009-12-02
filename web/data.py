@@ -83,6 +83,11 @@ class Job(OwnedModel):
             self.level_up()
         self.put()
 
+    def rollback_xp(self, value):
+        self.xp -= value
+        # compromise: don't level down
+        self.put()
+
     def level_up(self):
         self.level += 1
         self.put()
@@ -105,7 +110,7 @@ class SiteNews(db.Model):
 
 class Metric(OwnedModel):
     name = db.StringProperty(required=True)
-    type = db.StringProperty(default='client') # may be client, server, or manual
+    type = db.StringProperty(choices=set(['client','server','manual']),default='client')
     ratio_n = db.IntegerProperty(default=1)
     ratio_d = db.IntegerProperty(default=1)
     unit = db.StringProperty()
@@ -128,6 +133,22 @@ class MetricTxn(OwnedModel):
     def apply(self):
         if self.job: self.job.gain_xp(self.value)
 
+    def rollback(self):
+        if self.job: self.job.rollback_xp(self.value)
+
+    def change_job(self, new_job):
+        self.rollback()
+        self.job = new_job
+        self.apply()
+        self.put()
+
+    def change_metric(self, new_metric):
+        self.rollback()
+        self.job = new_metric.connected_to
+        self.metric = new_metric
+        self.apply()
+        self.put()
+
 class VisualProperties(db.Model):
     height_in_cm = db.FloatProperty()
     weight_in_kg = db.FloatProperty()
@@ -138,13 +159,20 @@ class VisualProperties(db.Model):
 
 attributes = ['might', 'dexterity', 'constitution', 'intellect', 'wisdom', 'charisma', 'perception', 'patience']
 
+def privacy_property():
+    return db.StringProperty(choices=set(["public","private","personal"]),default="public")
+
 class Character(OwnedModel):
     # decoration
     heroic_alias = db.StringProperty()
-    sex = db.StringProperty(choices=set(["male","female","other"])) # not bool in case a third sex joins
+    sex = db.StringProperty(choices=set(["male","female","other"]),default="other") # not bool in case a third sex joins
     visual_properties = VisualProperties()
     location = db.GeoPtProperty()
     created = db.DateProperty(auto_now_add=True)
+    # privacy
+    show_in_hall_of_heroes_p = db.BooleanProperty(default=True)
+    searchable = db.StringProperty(choices=set(["hide","by-email","show"]),default="show")
+    feed_access = privacy_property()
     # metrics
     gatherer_code = db.StringProperty(required=True)
     # stats
@@ -175,6 +203,7 @@ class Character(OwnedModel):
     @classmethod
     def by_code(cls, code):
         return cls.all().filter('gatherer_code =', code)
+
 
 def fresh_gatherer_code():
     r = base64.urlsafe_b64encode(os.urandom(8))

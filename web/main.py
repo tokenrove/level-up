@@ -14,6 +14,7 @@ class MainHandler(util.RequestHandler):
     def generate_hall_of_heroes(self):
         # XXX should perhaps be ordered by sum of levels minus number of jobs?
         jobs = data.Job.all().order('-level').fetch(max_results)
+        jobs = filter(lambda x: data.Character.by_user(x.owner).get().show_in_hall_of_heroes_p, jobs)
         return map(lambda x: { 'character': data.Character.by_user(x.owner).get(),
                                'archetype': x.archetype._static,
                                'primary_class': x,

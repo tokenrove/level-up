@@ -22,6 +22,7 @@ class ProfileHandler(util.RequestHandler):
         available_archetypes = filter(lambda x: x.name not in map(lambda y: y.archetype.name, jobs),
                                       data.Archetype.all().fetch(max_results))
         unconnected_metrics = data.Metric.by_user(user).filter('connected_to =',None).fetch(max_results)
+        manual_metrics = data.Metric.by_user(user).filter('type =','manual').fetch(max_results)
         self.handle_with_template('profile.html',
                                   { 'me': character,
                                     'jobs': jobs,
@@ -30,6 +31,7 @@ class ProfileHandler(util.RequestHandler):
                                     'level_percentage': data.calculate_level_percentage(jobs),
                                     'available_archetypes': available_archetypes,
                                     'unconnected_metrics': unconnected_metrics,
+                                    'manual_metrics': manual_metrics,
                                     'admin_migration_fns': data.migration_fns,
                                     'adminp': users.is_current_user_admin() })
 
@@ -76,15 +78,18 @@ class JobViewHandler(util.RequestHandler):
 
 class CreatorHandler(util.RequestHandler):
     def get(self):
-        self.handle_with_template('create.html', { 'user': users.get_current_user() })
+        user = users.get_current_user()
+        self.handle_with_template('create.html', { 'user': user,
+                                                   'me': data.Character(owner=user, gatherer_code=data.fresh_gatherer_code()) })
 
     def post(self):
         user = users.get_current_user()
         character = data.Character.by_user(user).get()
         if character == None:
             character = data.Character(owner=user, gatherer_code=data.fresh_gatherer_code())
-        character.heroic_alias = self.request.get('heroic_alias')
-        character.sex = self.request.get('sex')
+        for x in ['heroic_alias', 'feed_access', 'searchable']:
+            character.__setattr__(x, self.request.get(x))
+        character.show_in_hall_of_heroes_p = self.request.get('show_in_hall_of_heroes_p') == 'true'
         character.put()
         self.redirect('/me')
 

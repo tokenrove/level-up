@@ -1,10 +1,10 @@
-{% extends "base.html" %}
+{% extends "../base.html" %}
 
 {% block content %}
 <p>Connect {{ metric.name|escape }} to which job?</p>
 
     <table id="connect">
-    <tr class="odd-row">{% if metric.connected_to %}
+    <tr class="legend-row">{% if metric.connected_to %}
       <td /> <td /> <td>
       <form action="/me/metric/connect" method="post">
 	  <input type=hidden name=back value="/me" />

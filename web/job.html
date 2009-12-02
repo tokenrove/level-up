@@ -1,44 +1,45 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <img src="{% if archetype %}{{ archetype.sprite|urlencode }}{% else %}/images/onion.png{% endif %}" />
-    <h1>Level {{ job.level|escape }} {{ job.archetype.name|escape|capfirst }}</h1>
-    <div class="xp-bar">
-      <div class="xp-bar-inner" style="width: {% widthratio job.xp job.xp_to_next_level 100 %}%;"></div>
-      <div class="xp-bar-current">{{ job.xp }}</div>
-      <div class="xp-bar-to-next">/ {{ job.xp_to_next_level }}</div>
-    </div>
+<img src="{% if archetype %}{{ archetype.sprite|urlencode }}{% else %}/images/onion.png{% endif %}" />
+<h1>Level {{ job.level|escape }} {{ job.archetype.name|escape|capfirst }}</h1>
+<div class="xp-bar">
+  <div class="xp-bar-inner" style="width: {% widthratio job.xp job.xp_to_next_level 100 %}%;"></div>
+  <div class="xp-bar-current">{{ job.xp }}</div>
+  <div class="xp-bar-to-next">/ {{ job.xp_to_next_level }}</div>
+</div>
 
-    {% if xp_percentage %}
-    <img src="http://chart.apis.google.com/chart?chf=bg,s,0000ff00&cht=p&chd=t:{{ xp_percentage|join:"," }}&chs=468x100&chl={{ metric_names|join:"|" }}" />
-    {% endif %}
+{% if xp_percentage %}
+<img src="http://chart.apis.google.com/chart?chf=bg,s,0000ff00&cht=p&chd=t:{{ xp_percentage|join:"," }}&chs=468x100&chl={{ metric_names|join:"|" }}" />
+{% endif %}
 
 
-    {% if metrics %}
-    <p>Metrics:
-      <table>
-	<tr class="legend-row"><th>Name</th><th>Units</th><th>Conversion</th><th>Ops</th></tr>
-      {% for metric in metrics %}
-      <tr class="{% cycle odd-row,even-row %}">
-	<td>
-	  {% ifequal metric.type 'manual' %}
-	  <a href="/me/metric/manual?key={{ metric.key|urlencode }}">{{ metric.name|escape }}</a>
-	  {% else %}
-	  {{ metric.name|escape }}
-	  {% endifequal %}
-	</td>
-	<td>{{ metric.unit|escape }}</td>
-	<td>{{ metric.ratio_n }}:{{ metric.ratio_d }}</td>
-	<td>
-	  <a href="/me/metric/txns?key={{ metric.key|urlencode }}">txns</a>
-	  <a href="/me/metric/connect?key={{ metric.key|urlencode }}">connect</a>
-	  <a href="/me/metric/delete?key={{ metric.key|urlencode }}">delete</a>
-	</td>
-      </tr>
-      {% endfor %}
-      </table>
-    </p>
-    {% endif %}
+{% if metrics %}
+<p>Metrics:
+  <table>
+    <tr class="legend-row"><th>Name</th><th>Units</th><th>Conversion</th><th>Ops</th></tr>
+    {% for metric in metrics %}
+    <tr class="{% cycle odd-row,even-row %}">
+      <td><a href="/me/metric/edit?key={{ metric.key|urlencode }}">{{ metric.name|escape }}</a></td>
+      <td>{{ metric.unit|escape }}</td>
+      <td>{{ metric.ratio_n }}:{{ metric.ratio_d }}</td>
+      <td>
+	<a href="/me/metric/txns?key={{ metric.key|urlencode }}">txns</a>
+	<a href="/me/metric/connect?key={{ metric.key|urlencode }}">connect</a>
+	<a href="/me/metric/merge?key={{ metric.key|urlencode }}">merge</a>
+	<a href="/me/metric/delete?key={{ metric.key|urlencode }}">delete</a>
+      </td>
+    </tr>
+    {% endfor %}
+  </table>
+</p>
+{% endif %}
 
-    <div id="tools"><span>&#187;<a href="/me/metric">All Metrics</a></span> <span>&#187;<a href="/me/metric/add?default_job={{ job.archetype.name|urlencode }}">Add Metric</a></span></div>
+{% block tools %}
+<div id="tools"><span>&#187;<a href="/me/metric">All Metrics</a></span>
+  <span>&#187;<a href="/me/metric/add?default_job={{ job.archetype.name|urlencode }}">Add Metric</a></span></div>
+{% endblock %}
+
+{% block navigation %}<div id="tools"><span>&#187;<a href="/me">Back to profile</a></span></div>{% endblock %}
+
 {% endblock %}

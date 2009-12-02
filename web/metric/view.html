@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "../base.html" %}
 
 {% block content %}
     <p>Got {{ metrics|length }} of {{ count|escape }} metrics.</p>
@@ -7,13 +7,14 @@
 	<tr class="legend-row"><th>Name</th><th>Job</th><th>Ops</th></tr>
       {% for metric in metrics %}
       <tr class="{% cycle odd-row,even-row %}">
-	<td>{{ metric.name|escape }}</td>
+	<td><a href="/me/metric/edit?key={{ metric.key|urlencode }}">{{ metric.name|escape }}</a></td>
 	<td>{% if metric.connected_to %}
 	  level {{ metric.connected_to.level|escape }} {{ metric.connected_to.archetype.name|escape }}
 	  {% else %}none{% endif %}</td>
 	<td>
 	  <a href="/me/metric/txns?key={{ metric.key|urlencode }}">txns</a>
 	  <a href="/me/metric/connect?key={{ metric.key|urlencode }}">connect</a>
+	  <a href="/me/metric/merge?key={{ metric.key|urlencode }}">merge</a>
 	  <a href="/me/metric/delete?key={{ metric.key|urlencode }}">delete</a>
 	</td>
       </tr>

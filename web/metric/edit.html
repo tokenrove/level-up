@@ -1,0 +1,22 @@
+{% extends "../base.html" %}
+
+{% block content %}
+    <form action="/me/metric/edit" method="post">
+      <input type=hidden name=key value="{{ metric.key|urlencode }}" />
+      <table>
+	<tr><td>Name</td><td><input type=text name=name value="{{ metric.name|escape }}"/></td></tr>
+	<tr><td>Type</td><td>{{ metric.type|escape }}</td></tr>
+	<tr><td>Associated job</td>
+	  <td>{% if metric.connected_to %}{{ metric.connected_to.archetype.name|escape }}
+	    {% else %}none{% endif %}</td></tr>
+	<tr><td>Conversion
+	rate <i>(XP:units)</i></td><td><input type=text name=ratio_n value="{{ metric.ratio_n }}" size=3 format="*N" style="text-align: right;" />:<input type=text name=ratio_d value="{{ metric.ratio_d }}" size=1 format="*N" /></td></tr>
+	<tr><td>Unit of measurement</td><td><input type=text name=unit value="{{ metric.unit }}" /></td></tr>
+	<tr><td /><td><input type=submit value="Change" /></td></tr>
+      </table>
+    </form>
+
+{% block navigation %}<div id="tools"><span>&#187;<a href="/me">Back to profile</a></span></div>{% endblock %}
+
+{% endblock %}
+

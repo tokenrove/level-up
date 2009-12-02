@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "../base.html" %}
 
 {% block content %}
     <p>Last {{ txns|length }} transaction{{ txns|length|pluralize }} logged for {{ metric.name|escape }}:

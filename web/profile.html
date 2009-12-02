@@ -22,10 +22,25 @@
 
 {% block metrics %}
 <hr />
-<!-- unconnected metrics -->
-{% if unconnected_metrics %}
-<p>Unconnected metrics:</p>
+{% if manual_metrics %}
 <table>
+  <tr class="legend-row"><th colspan=4>Manual metrics</th></tr>
+  {% for metric in manual_metrics %}
+  <tr class="{% cycle odd-row,even-row %}">
+    <td><a href="/me/metric/edit?key={{ metric.key|urlencode }}">{{ metric.name|escape }}</a></td>
+    <td>{% if metric.connected_to %}{{ metric.connected_to.archetype.name|escape }}{% else %}none{% endif %}</td>
+    <td><form action="/me/metric/manual" method="post">
+	<input type=hidden name=key value="{{ metric.key|urlencode }}" />
+	<input type=text name=value /> <i>{{ metric.unit }}</i></td>
+    <td><input type=submit value="Record" /></td></form>
+  </tr>
+  {% endfor %}
+</table>
+{% endif %}
+
+{% if unconnected_metrics %}
+<table>
+  <tr class="legend-row"><th colspan=2>Unconnected metrics</th></tr>
   {% for metric in unconnected_metrics %}
   <tr class="{% cycle odd-row,even-row %}">
     <td><a href="/me/metric/connect?key={{ metric.key|urlencode }}">{{ metric.name|escape }}</a></td>
@@ -44,8 +59,7 @@
 
 {% block gatherer_config %}
 <!-- gatherer config -->
-<hr />
-<div class="round" style="width: 30%">
+<div class="round">
   <div class="gatherer-code"><i>Gatherer code: </i><tt>{{ me.gatherer_code|escape }}</tt></div>
 
   <p>Give this code to your gatherers to associate them with your

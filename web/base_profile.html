@@ -1,6 +1,14 @@
 {% extends "base.html" %}
 
 {% block content %}
+
+{% block right_block %}
+<div style="margin-top: 1ex; width: 30%; float: right">
+{% block gatherer_config %}{% endblock %}
+{% block admin_tools %}{% endblock %}
+</div>
+{% endblock %}
+
 {% block profile %}
 <p><img src="{% if archetype %}{{ archetype.sprite|urlencode }}{% else %}/images/onion.png{% endif %}"
         style="width: 2.5em; height: 3.5em;" />
@@ -60,9 +68,6 @@
 
 {% block companions %}{% endblock %}
 {% block companion_tools %}{% endblock companion_tools %}
-
-{% block gatherer_config %}{% endblock %}
-{% block admin_tools %}{% endblock %}
 
 {% block navigation %}<div id="navigation"><span>&#187;<a href="/">Back to front page</a></span></div>{% endblock %}
 

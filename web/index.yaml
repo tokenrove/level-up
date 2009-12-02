@@ -22,6 +22,17 @@ indexes:
   - name: level
     direction: desc
 
+- kind: Metric
+  properties:
+  - name: owner
+  - name: key
+
+- kind: MetricTxn
+  properties:
+  - name: metric
+  - name: owner
+  - name: created
+
 - kind: MetricTxn
   properties:
   - name: metric

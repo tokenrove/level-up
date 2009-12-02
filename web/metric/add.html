@@ -1,0 +1,90 @@
+{% extends "../base.html" %}
+
+{% block content %}
+<div id="explanation" style="width: 50%; float: right">
+  <p>Adding a metric:</p>
+  <p>There are three major types of metrics:
+    <dl><dt>automatic:</dt>
+      <dd>submitted by a gatherer on the client side, from a cron
+	job or commit trigger.</dd>
+      <dt>server-side:</dt>
+      <dd>gathered by the server, like an RSS feed.</dd>
+      <dt>manual:</dt>
+      <dd>manually input via a web form.</dd>
+  </dl></p>
+  <p>Obviously the first two are preferable to the third, but until
+    an automatic source of data can be found, it can be helpful to be
+    able to make manual submissions.  The primary purpose of this form
+    is to define the third type, but you can pre-declare any gatherer
+    here.</p>
+
+  <p>For automatic client-side metrics, stick your gatherer code in
+    a file called <tt>~/.level-up-code</tt>.</p>
+
+  <p>Client-side gatherers to download: (more to come)
+    <dl>
+      <dt><a href="/static/gatherers/git-commit-hook-added-lines.sh">git
+	  commit hook</a></dt>
+      <dd>Make this script executable, then symlink it
+	to <tt><i>repo</i>/.git/hooks/post-commit</tt>.  It will
+	submit one XP for each line added per commit.  You can run it
+	manually, from the base repo directory, to verify that it
+	works and to connect the metric before submitting real data.</dd>
+      <dt><a href="/static/gatherers/TracLevelUpGatherer-0.1-py2.5.egg">trac
+	  bug fix hook</a></dt>
+      <dd>Drop this into your <tt>trac/plugins</tt> directory and
+	enable it as with any other trac plugin.  It submits by
+	default fifty XP for each issue closed with a resolution of
+	"fixed".
+	Example configuration (add to trac.conf):
+	<pre>
+[level_up]
+authors = julian, matt
+gatherer_codes = /home/julian/.level-up-code, dKmK_14MzwI=
+	</pre>
+
+	Note that if you specify only one value
+	for <tt>authors</tt>, the default location to check for a
+	gatherer code is <tt>~/.level-up-code</tt> for the user
+	running trac.  You can also customize <tt>unit</tt>, <tt>ratio</tt>, <tt>value</tt>,
+	<tt>metric_name</tt>, <tt>resolution</tt>, and <tt>submit_url</tt>.</dd>
+    </dl>
+  </p>
+
+  <p>Note that all XP values are integers, and as such, the
+    conversion ratio given below (also with integer numerator and
+    denominator) will silently truncate fractional XP, like all
+    classic RPGs.</p>
+</div>
+
+<div id="form">
+    <p>XXX: There should be tooltips here to assist with filling in
+      the form.</p>
+
+    <form action="/me/metric/add" method="post">
+      <table>
+	<tr><td>Name</td><td><input type=text name=name /></td></tr>
+	<tr><td>Type</td>
+	  <td>
+	    <input type=radio value=manual name=type checked>Manual</input>
+	    <input type=radio value=client name=type>Client</input>
+	    <input type=radio value=server name=type>Server</input>
+	</td></tr>
+	<tr><td>Associated job</td>
+	  <td><select name=job>
+	      <option value="">None</option>
+	      {% for job in jobs %}
+	      <option value="{{ job.key }}"{% ifequal default_job job.archetype.name %} selected="selected"{% endifequal %}>
+		{{ job.archetype.name|escape }}
+	      </option>
+	      {% endfor %}
+	</select></td></tr>
+	<tr><td>Conversion rate <i>(XP:units)</i></td><td><input type=text name=ratio_n value="1" size=3 format="*N" style="text-align: right;" />:<input type=text name=ratio_d value="1" size=1 format="*N" /></td></tr>
+	<tr><td>Unit of measurement</td><td><input type=text name=unit /></td></tr>
+	<tr><td /><td><input type=submit value="Add" /></td></tr>
+      </table>
+    </form>
+</div>
+
+{% block navigation %}<div id="tools"><span>&#187;<a href="/me">Back to profile</a></span></div>{% endblock %}
+{% endblock %}

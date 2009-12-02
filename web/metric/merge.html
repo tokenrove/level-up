@@ -1,0 +1,22 @@
+{% extends "../base.html" %}
+
+{% block content %}
+<p>Merge {{ metric.name|escape }} into which metric?</p>
+
+<table id="merge">
+  {% for other in others %}
+  <tr class="{% cycle even-row,odd-row %}">
+    <td>{{ other.name|escape }}</td>
+    <td><form action="/me/metric/merge" method="post">
+	<input type=hidden name=back value="/me" />
+	<input type=hidden name=key value="{{ metric.key|urlencode }}" />
+	<input type=hidden name=destination value="{{ other.key|urlencode }}" />
+	<input type=submit value="connect" style="margin-top: 10px;" />
+    </form></td>
+  </tr>
+  {% endfor %}
+</table>
+
+{% block navigation %}<div id="tools"><span>&#187;<a href="/me">Back to profile</a></span></div>{% endblock %}
+
+{% endblock %}

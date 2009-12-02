@@ -1,1 +1,7 @@
 {% extends "base_profile.html" %}
+
+{% block profile_tools %}
+{% ifequal me.feed_access "public" %}
+<div id="tools"><span>&#187;<a href="/feed.xml?key={{ me.key|urlencode }}">Atom feed</a></span></div>
+{% endifequal %}
+{% endblock profile_tools %}

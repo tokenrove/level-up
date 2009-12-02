@@ -1,21 +1,12 @@
-{% extends "base.html" %}
+{% extends "base_profile_edit.html" %}
 
-{% block content %}
+{% block intro %}
 <p>Create your character here.  All of these values can be changed
   later, so don't worry too much about them.</p>
+{% endblock %}
 
-    <form action="/me/create" method="post">
-      <div>Heroic alias: <input type="text" name="heroic_alias" default="{{ user.nickname|escape }}" /></div>
-      <div>Sex: <input type="radio" name="sex" value="male" />Male
-	<input type="radio" name="sex" value="female" />Female
-	<input type="radio" name="sex" value="other" />Other
-      </div>
-      <div>Height</div>
-      <div>Weight</div>
-      <div>Skin color</div>
-      <div>Hair color (or bald)</div>
-      <div>Eye color</div>
-      <div>Favorite color (for clothes)</div>
-      <div><input type="submit" value="Create!" /></div>
-    </form>
+{% block heroic_alias_default %}{{ user.nickname|escape }}{% endblock %}
+
+{% block navigation %}
+<div><input type="submit" value="Create!" /></div>
 {% endblock %}
